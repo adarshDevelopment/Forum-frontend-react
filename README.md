@@ -19,6 +19,7 @@ Tailwind Tips:
 1. object-cover: this class does not stretch the image and crops it 
 2. overflow-hidden: hides overflown elements 
 3. focus-outline-none: removes the thick annyoing border when focusing
+4. to learn about flex, open Flex.jsx
 
 
 

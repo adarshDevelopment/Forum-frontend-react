@@ -5,16 +5,17 @@ function Flex() {
         <div className='flex flex-col'>
             Flex grow
             <div className="flex bg-gray-200 p-4 gap-x-4">
-                <div className="bg-blue-400 p-4 ">Item 1 (grow)</div>
+                <div className="bg-blue-400 p-4 flex-grow ">Item 1 (grow)</div>
                 <div className="bg-green-400 p-4 grow-0">Item 2 (no grow)</div>
                 <div className="bg-yellow-400 p-4 grow">Item 3 (grow)</div>
             </div>
 
             <br /><br />
+            
             Max width xs
             <div className='flex '>
                 <div className="flex bg-gray-200 p-4 space-x-4">
-                    <div className="bg-blue-400 p-4 grow-0 max-w-sm">A very long paragraph that forces the div to grow. Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis magni vitae aspernatur asperiores porro quidem soluta est earum corporis qui repellendus, fuga maxime doloremque voluptatem itaque rem aliquam repellat aperiam...</div>
+                    <div className="bg-blue-400 p-4 grow-0 max-w-sm flex-nowrap">A very long paragraph that forces the div to grow. Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis magni vitae aspernatur asperiores porro quidem soluta est earum corporis qui repellendus, fuga maxime doloremque voluptatem itaque rem aliquam repellat aperiam...</div>
                     <div className="bg-green-400 p-4 grow-0 max-w-xs">Another long text...</div>
                 </div>
             </div>
