@@ -46,64 +46,61 @@ function Home() {
     // end of header functions
 
     return (
-
-        <div className='bg-yellow-40 h-screen w-full relative top-0'>
-            {/* <Login className={'absolute  top-0 left-0'} /> */}
-
-            <div className='min-h-screen bg-green-40 relative'>
+        
+        <div className=' relative'>
+            <Login className={'absolute z-50'}/>
 
 
-                <Header setToggleNotification={setToggleNotification}
-                    setToggleProfile={setToggleProfile}
-                    profileButtonRef={profileButtonRef}
-                    notificationButtonRef={notificationButtonRef}
-                    profileDropDownRef={profileDropDownRef}
-                    notificationDropDownRef={notificationDropDownRef}
+            <Header setToggleNotification={setToggleNotification}
+                setToggleProfile={setToggleProfile}
+                profileButtonRef={profileButtonRef}
+                notificationButtonRef={notificationButtonRef}
+                profileDropDownRef={profileDropDownRef}
+                notificationDropDownRef={notificationDropDownRef}
+            />
+
+
+            {/* main content div */}
+            <div className='grid grid-cols-12 mt-16 relative'>
+
+
+                {/* Drop down menus */}
+                <ProfileDropDown profileDropDownRef={profileDropDownRef}
+                    toggleProfile={toggleProfile}
+                    toggleDarkMode={toggleDarkMode}
+                    darkMode={darkMode}
                 />
 
+                <NotificationDropDown toggleNotification={toggleNotification} notificationDropDownRef={notificationDropDownRef} />
 
-                {/* main content div */}
-                <div className='grid grid-cols-12 mt-16 relative'>
-
-
-                    {/* Drop down menus */}
-                    <ProfileDropDown profileDropDownRef={profileDropDownRef}
-                        toggleProfile={toggleProfile}
-                        toggleDarkMode={toggleDarkMode}
-                        darkMode={darkMode}
-                    />
-
-                    <NotificationDropDown toggleNotification={toggleNotification} notificationDropDownRef={notificationDropDownRef} />
-
-                    {/* end of drop down menus */}
+                {/* end of drop down menus */}
 
 
 
-                    {/* Left grid */}
-                    <Sidebar />
+                {/* Left grid */}
+                <Sidebar />
 
 
-                    {/* center main grid */}
-                    <main className='bg-green-40 col-span-8 flex flex-col relative'>
-                        <Outlet />
+                {/* center main grid */}
+                <main className='bg-green-40 col-span-8 flex flex-col relative'>
+                    <Outlet />
 
 
-                        {/* footer */}
-                        <Footer className={'bg-white'} />
-                    </main>
+                    {/* footer */}
+                    <Footer className={'bg-white'} />
+                </main>
 
 
-                    {/* right side */}
+                {/* right side */}
 
-                    {/* <div className='col-span-2 bg-pink-400 sticky top-16 h-[calc(100vh-64px)] '>
+                {/* <div className='col-span-2 bg-pink-400 sticky top-16 h-[calc(100vh-64px)] '>
                     second div
                 </div> */}
 
 
 
-                </div>
-                <><Toaster richColors={true} position="top-right" /></>
             </div>
+            <><Toaster richColors={true} position="top-right" /></>
         </div>
     )
 }
