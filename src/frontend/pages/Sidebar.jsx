@@ -7,7 +7,7 @@ import { HiPlus } from "react-icons/hi2";
 
 
 
-function Aside() {
+function Sidebar() {
 
     const [customFeedsAccordion, setCustomFeedsAccordion] = useState(false);
     const [recentAccordion, setRecentAccrecentAccordion] = useState(false);
@@ -204,4 +204,4 @@ function Aside() {
     )
 }
 
-export default Aside
+export default Sidebar

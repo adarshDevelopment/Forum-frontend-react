@@ -8,7 +8,7 @@ function NotificationDropDown({ notificationDropDownRef, toggleNotification }) {
             {/* Notification drop down */}
             {
                 toggleNotification ?
-                    <div ref={notificationDropDownRef} className='flex flex-col w-96 rounded-lg py-2 bg-white text-gray-800 shadow-lg fixed right-4 select-none max-h-[472px] z-50 '>
+                    <div ref={notificationDropDownRef} className='flex flex-col w-96 rounded-lg py-2 bg-white text-gray-800 shadow-lg fixed right-4 select-none max-h-[472px] z-20 '>
 
 
                         <div className='flex flex-col gap-4 bg-gree-400 mx-2 max-h-[420px] overflow-y-auto border-b '>

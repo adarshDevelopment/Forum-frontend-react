@@ -60,7 +60,7 @@ function Header({ setToggleProfile, setToggleNotification, profileButtonRef, not
 
     // end of header functions
     return (
-        <header className='flex-grow-0 flex shrink-0 overflow-hidden h-16 top-0 w-full left-0 border-b bg-white justify-between z-50 fixed'>
+        <header className='flex-grow-0 flex shrink-0 overflow-hidden h-16 top-0 w-full left-0 border-b bg-white  z-10 fixed justify-between'>
 
             <nav className='h-full flex justify-between border-gray-300  w-full px-4'>
 

@@ -6,7 +6,7 @@ function ProfileDropDown({ toggleProfile, profileDropDownRef, toggleDarkMode, da
             {/* Profile drop down */}
             {
                 toggleProfile ?
-                    <div ref={profileDropDownRef} className='flex flex-col w-72 rounded-lg py-2 bg-white text-gray-800 shadow-lg  right-4 select-none z-50 fixed'>
+                    <div ref={profileDropDownRef} className='flex flex-col w-72 rounded-lg py-2 bg-white text-gray-800 shadow-lg  right-4 select-none z-20 fixed'>
                         <span className='px-7 py-4 hover:bg-indigo-500 hover:text-white cursor-pointer border-b border-gray-500 '>View Profile</span>
                         <span className='px-7 py-4 hover:bg-indigo-500 hover:text-white cursor-pointer'>Edit Avatar</span>
 
