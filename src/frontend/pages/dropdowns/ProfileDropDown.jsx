@@ -10,7 +10,9 @@ function ProfileDropDown({ toggleProfile, profileDropDownRef, toggleDarkMode, da
                         <span className='px-7 py-4 hover:bg-indigo-500 hover:text-white cursor-pointer border-b border-gray-500 '>View Profile</span>
                         <span className='px-7 py-4 hover:bg-indigo-500 hover:text-white cursor-pointer'>Edit Avatar</span>
 
-                        <span className='px-7 py-4 hover:bg-indigo-500 hover:text-white  flex justify-between items-center'
+
+                        {/* dark mode button */}
+                        <span className='px-7 py-4 hover:bg-indigo-500 hover:text-white flex justify-between items-center'
                             onClick={toggleDarkMode}
                         >
                             <span>Dark Mode</span>
@@ -19,7 +21,8 @@ function ProfileDropDown({ toggleProfile, profileDropDownRef, toggleDarkMode, da
                                         `}>
                                 <div className={`w-8 h-8 bg-white border rounded-full shadow-2xl transition-all duration-150
                                             ${darkMode ? 'ml-8' : 'ml-0'}
-                                            `} />
+                                            `} // if darkmode? half div shifts to exactly half width, 8 to ml-8, and if not ml becomes 0, comes back to its original place
+                                />
                             </div>
                         </span>
 

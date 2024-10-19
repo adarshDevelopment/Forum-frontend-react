@@ -46,9 +46,13 @@ function Home() {
     // end of header functions
 
     return (
-        
+
+
+
         <div className=' relative'>
-            <Login className={'absolute z-50'}/>
+
+
+            <Login />
 
 
             <Header setToggleNotification={setToggleNotification}
@@ -94,14 +98,16 @@ function Home() {
                 {/* right side */}
 
                 {/* <div className='col-span-2 bg-pink-400 sticky top-16 h-[calc(100vh-64px)] '>
-                    second div
-                </div> */}
+        second div
+    </div> */}
 
 
 
             </div>
             <><Toaster richColors={true} position="top-right" /></>
         </div>
+
+
     )
 }
 
