@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { FaGoogle, FaApple } from "react-icons/fa";
 import { RxCross1 } from "react-icons/rx";
-function Login({ className }) {
+function SignUp({ className }) {
 
     const [emailToggle, setEmailToggle] = useState(false);
     const [psaswordToggle, setPasswordToggle] = useState(false);
+    const [confirmPasswordToggle, setConfirmPasswordToggle] = useState(false);
 
 
 
     const [formData, setFormData] = useState({
         email: '',
-        password: ''
+        password: '',
+        confirmPassword: ''
 
     })
 
@@ -54,10 +56,12 @@ function Login({ className }) {
 
                     </div>
 
+                    {/* email and password */}
                     <div className='flex flex-col gap-3'>
+                        {/* email */}
                         <div className='bg-red-400 rounded-2xl relative flex justify-between items-center'>
                             <span className={`absolute pointer-events-none left-3 text-md text-gray-500 transition-all duration-100  ${(emailToggle || formData.email) ? 'text-xs top-2' : ''}`}>
-                                Email or username <span className='text-red-600'>*</span>
+                                Email <span className='text-red-600'>*</span>
                             </span>
                             <input
                                 className='bg-custom-gray w-full rounded-2xl px-3 pt-6 pb-2 focus:outline-none focus:border-blue-400 border'
@@ -70,6 +74,8 @@ function Login({ className }) {
                             />
                         </div>
 
+
+                        {/* Confirm Password */}
                         <div className='relative flex items-center'>
                             <span className={`absolute left-3 text-gray-500 transition-all duration-100 pointer-events-none ${psaswordToggle || formData.password ? 'text-xs top-2' : ''}`}>Enter password <span className='text-red-600'>*</span></span>
                             <input
@@ -79,23 +85,36 @@ function Login({ className }) {
                                 onChange={e => setFormData({ ...formData, password: e.target.value })}
                             />
                         </div>
+
+
+                        {/* Confirm password */}
+                        <div className='relative flex items-center'>
+                            <span className={`absolute left-3 text-gray-500 transition-all duration-100 pointer-events-none ${confirmPasswordToggle || formData.confirmPassword ? 'text-xs top-2' : ''}`}>Confirm Password <span className='text-red-600'>*</span></span>
+                            <input
+                                onFocus={() => { setConfirmPasswordToggle(true) }}
+                                onBlur={() => setConfirmPasswordToggle(false)}
+                                className='bg-custom-gray w-full rounded-2xl px-3 pt-6 pb-2 focus:outline-none focus:border-blue-400 border'
+                                onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
+                            />
+                        </div>
+
+
+
+
                     </div>
 
                     <div className='text-blue-500 text-sm pt-3'>
-                        Forgot Password?
+                        Back to Login
 
                     </div>
 
-                    <div className='text-sm'>
-                        New to Reddit? <span className='text-blue-500'> Sign Up</span>
-                    </div>
 
 
                 </div>
 
                 <div className='md:py-6 md:px-20 py-6 px-14 flex items-center flex-grow-0'>
                     <button className='bg-indigo-600 w-full hover:bg-indigo-700 rounded-2xl px-3 py-3 text-white font-semibold'>
-                        Log in
+                        Sign Up
                     </button>
                 </div>
             </div>
@@ -106,7 +125,7 @@ function Login({ className }) {
     )
 }
 
-export default Login
+export default SignUp
 
 
 // md:py-10 md:px-20 py-10 px-14

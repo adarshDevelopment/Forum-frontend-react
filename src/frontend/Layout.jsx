@@ -13,6 +13,7 @@ import NotificationDropDown from './pages/dropdowns/NotificationDropDown';
 import Sidebar from './pages/Sidebar';
 import Footer from './pages/Footer';
 import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 
 
 import { Outlet } from 'react-router-dom';
@@ -52,7 +53,8 @@ function Home() {
         <div className=' relative'>
 
 
-            <Login />
+            {/* <Login /> */}
+            {/* <SignUp /> */}
 
 
             <Header setToggleNotification={setToggleNotification}
@@ -89,6 +91,7 @@ function Home() {
                 <main className='bg-green-40 col-span-8 flex flex-col relative'>
                     <Outlet />
 
+                    
 
                     {/* footer */}
                     <Footer className={'bg-white'} />
