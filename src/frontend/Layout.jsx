@@ -54,7 +54,7 @@ function Home() {
 
 
             {/* <Login /> */}
-            {/* <SignUp /> */}
+            <SignUp />
 
 
             <Header setToggleNotification={setToggleNotification}
