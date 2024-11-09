@@ -1,13 +1,12 @@
-import React from 'react'
-
+import React, { useEffect } from 'react'
 import { Toaster, toast } from 'sonner';
-
 import { useRef, useState } from 'react';
 
+import { useDispatch } from 'react-redux';
 
 
 // pages import
-import Header from './pages/Header';
+import Header from './pages/header/Header';
 import ProfileDropDown from './pages/dropdowns/ProfileDropDown';
 import NotificationDropDown from './pages/dropdowns/NotificationDropDown';
 import Sidebar from './pages/Sidebar';
@@ -16,9 +15,8 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 
 
+
 import { Outlet } from 'react-router-dom';
-
-
 
 
 
@@ -46,9 +44,8 @@ function Home() {
 
     // end of header functions
 
+
     return (
-
-
 
         <div className=' relative'>
 
@@ -73,11 +70,9 @@ function Home() {
                 {/* Drop down menus */}
                 <ProfileDropDown profileDropDownRef={profileDropDownRef}
                     toggleProfile={toggleProfile}
-                    toggleDarkMode={toggleDarkMode}
-                    darkMode={darkMode}
                 />
 
-                <NotificationDropDown toggleNotification={toggleNotification} notificationDropDownRef={notificationDropDownRef} />
+                <NotificationDropDown />
 
                 {/* end of drop down menus */}
 
@@ -91,7 +86,7 @@ function Home() {
                 <main className='bg-green-40 col-span-8 flex flex-col relative'>
                     <Outlet />
 
-                    
+
 
                     {/* footer */}
                     <Footer className={'bg-white'} />

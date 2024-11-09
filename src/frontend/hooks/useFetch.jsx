@@ -7,6 +7,7 @@ const useFetch = ({ url }) => {
     const [errors, setErrors] = useState(null);
 
     useEffect(() => {
+        // console.log('inside use effect of useFetch hooks inside hooks folder');
         // using try catch
 
         /*

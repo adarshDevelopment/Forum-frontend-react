@@ -17,7 +17,6 @@ function IndexPosts() {
     }
 
 
-
     return (
         <main className='bg-green-40 col-span-8 flex flex-col relative'>
 
@@ -25,7 +24,8 @@ function IndexPosts() {
                 {
                     data ?
                         // <>hello</>
-                        data.map((post) =>
+
+                        data.posts.map((post) =>
 
                             <div key={post.id} className="bg-gray-40 flex flex-col bg-orange-40 border-t">
 
