@@ -1,3 +1,14 @@
+Directory/Folder structure
+
+1. Layout -> header, footer, layout->indexPosts
+2. header: Header { ProfileMenu { NotificationDropDown, ProfileDropDown{DarkMode} } }
+3. footer
+
+fetchUser createAssyncThunk is called from Header.jsx to fetch user and also from several other places 
+
+
+
+
 1. Application features:
     Login
     Register
@@ -43,4 +54,9 @@ React Router setup:
     4. +create page
     5. message/chat
     6. dark mode toggle button
+
+
+
+
+
 

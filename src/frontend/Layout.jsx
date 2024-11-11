@@ -2,17 +2,21 @@ import React, { useEffect } from 'react'
 import { Toaster, toast } from 'sonner';
 import { useRef, useState } from 'react';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+// import { fetchUser } from 'src\store\features\authSlice\authSlice.js'
+import { fetchUser } from '../store/features/authSlice/authSlice';
 
 
 // pages import
-import Header from './pages/header/Header';
-import ProfileDropDown from './pages/dropdowns/ProfileDropDown';
-import NotificationDropDown from './pages/dropdowns/NotificationDropDown';
-import Sidebar from './pages/Sidebar';
-import Footer from './pages/Footer';
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
+import Header from './pages/components/header/Header';
+import ProfileDropDown from './pages/components/dropdowns/ProfileDropDown';
+import NotificationDropDown from './pages/components/dropdowns/NotificationDropDown';
+import Sidebar from './pages/components/Sidebar';
+import Footer from './pages/components/Footer';
+import Login from './pages/components/Login';
+import SignUp from './pages/components/SignUp';
+
 
 
 
@@ -22,6 +26,7 @@ import { Outlet } from 'react-router-dom';
 
 function Home() {
 
+    const user = useSelector(state => state.auth.user);
     // header functions
 
     const [toggleProfile, setToggleProfile] = useState(false);
@@ -33,9 +38,6 @@ function Home() {
     const notificationButtonRef = useRef(null);
     const notificationDropDownRef = useRef(null);
 
-    const [darkMode, setDarkMode] = useState(false);
-
-
 
     const toggleDarkMode = () => {
         setDarkMode(prevState => !prevState);
@@ -44,69 +46,76 @@ function Home() {
 
     // end of header functions
 
+    // token and fetchUser
 
-    return (
+    const token = localStorage.getItem('token');
+    const dispatch = useDispatch();
 
-        <div className=' relative'>
+    useEffect(() => {
+        dispatch(fetchUser());
+    }, [token])
 
+    // console.log('user in layout: ', user)
 
-            {/* <Login /> */}
-            <SignUp />
+    // console.log('user from layout: ', user);
+    if (user?.loading) {
+        return <></>
+    } else {
+        return (
 
-
-            <Header setToggleNotification={setToggleNotification}
-                setToggleProfile={setToggleProfile}
-                profileButtonRef={profileButtonRef}
-                notificationButtonRef={notificationButtonRef}
-                profileDropDownRef={profileDropDownRef}
-                notificationDropDownRef={notificationDropDownRef}
-            />
-
-
-            {/* main content div */}
-            <div className='grid grid-cols-12 mt-16 relative'>
+            <div className=' relative'>
 
 
-                {/* Drop down menus */}
-                <ProfileDropDown profileDropDownRef={profileDropDownRef}
-                    toggleProfile={toggleProfile}
-                />
-
-                <NotificationDropDown />
-
-                {/* end of drop down menus */}
+                <Login />
+                <SignUp />
 
 
-
-                {/* Left grid */}
-                <Sidebar />
+                <Header />
 
 
-                {/* center main grid */}
-                <main className='bg-green-40 col-span-8 flex flex-col relative'>
-                    <Outlet />
+                {/* main content div */}
+                <div className='grid grid-cols-12 mt-16 relative'>
+
+
+                    {/* Drop down menus */}
+                    <ProfileDropDown />
+
+                    <NotificationDropDown />
+
+                    {/* end of drop down menus */}
 
 
 
-                    {/* footer */}
-                    <Footer className={'bg-white'} />
-                </main>
+                    {/* Left grid */}
+                    <Sidebar />
 
 
-                {/* right side */}
+                    {/* center main grid */}
+                    <main className='bg-green-40 col-span-8 flex flex-col relative'>
 
-                {/* <div className='col-span-2 bg-pink-400 sticky top-16 h-[calc(100vh-64px)] '>
-        second div
-    </div> */}
+                        <Outlet />
+
+                        {/* footer */}
+                        <Footer className={'bg-white'} />
+                    </main>
+
+
+                    {/* right side */}
+
+                    {/* <div className='col-span-2 bg-pink-400 sticky top-16 h-[calc(100vh-64px)] '>
+            second div
+        </div> */}
 
 
 
+                </div>
+                <><Toaster richColors={true} position="top-right" /></>
             </div>
-            <><Toaster richColors={true} position="top-right" /></>
-        </div>
 
 
-    )
+        )
+    }
+
 }
 
 export default Home

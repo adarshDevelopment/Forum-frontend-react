@@ -1,35 +1,50 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { SlOptions } from "react-icons/sl";
 import React, { useEffect, useRef } from 'react'
-import { toggleNotificationDropdown } from '../../../store/features/modalSlice/toggleSlice';
+import { toggleNotificationDropdown } from '../../../../store/features/modalSlice/toggleSlice';
 
 
 function NotificationDropDown() {
 
+
+    /*
+        any click registerd outside of notification button (fetched through getElementById) and the dropdown itself will close the dropdown
+    */
     const dispatch = useDispatch();
     const notificationRef = useRef();
 
-    const notification = useSelector(state => state.toggleSlice);
+    const notificationValue = useSelector(state => state.toggleSlice.showNotificationDropdown);
 
+    const notificationElement = document.getElementById('notificationButton');
 
+    // any click registerd outside of notificaiton button and dropdown will close the window
     const hanldeClickOutside = (e) => {
-        if (notificationRef.current && !notificationRef.current.contains(e.target)) {
+        if (notificationRef.current
+            && notificationElement
+            && notificationValue
+            && !notificationRef.current.contains(e.target)
+            && !notificationElement.contains(e.target)
+        ) {
             dispatch(toggleNotificationDropdown(false));
         }
 
-        return () => {
-            document.removeEventListener('mousedown', hanldeClickOutside);
-        }
     }
 
     useEffect(() => {
-        document.addEventListener('mousedown', hanldeClickOutside)
-    }, [])
+        if (notificationValue) {
+            document.addEventListener('click', hanldeClickOutside);
+        } else {
+            document.removeEventListener('click', hanldeClickOutside);
+        }
+        return () => {
+            document.removeEventListener('click', hanldeClickOutside);
+        }
 
-    if (notification.showNotificationDropdown) {
+    }, [notificationValue])
+
+    if (notificationValue) {
         return (
             <>
-
                 <div
                     ref={notificationRef}
                     className='flex flex-col w-96 rounded-lg py-2 bg-white text-gray-800 shadow-lg fixed right-4 select-none max-h-[472px] z-20 '>
@@ -219,8 +234,8 @@ function NotificationDropDown() {
 
 
                     {/* <div className='bg-blue-500 w-full flex justify-center '>
-                        <button className='h-full flex justify-center items-center'> See All</button>
-                    </div> */}
+                    <button className='h-full flex justify-center items-center'> See All</button>
+                </div> */}
 
 
 
@@ -231,7 +246,6 @@ function NotificationDropDown() {
             </>
         )
     }
-
 
 
 

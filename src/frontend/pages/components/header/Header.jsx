@@ -1,31 +1,27 @@
 import React, { useState, useRef, useEffect } from 'react'
 
-import { RiAdvertisementLine } from "react-icons/ri";
-import { AiOutlineMessage } from "react-icons/ai";
-import { FaPlus, FaRegBell } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { toggleNotificationDropdown, toggleRegisterModal, toggleProfileDropdown } from '../../../store/features/modalSlice/toggleSlice';
+import { toggleNotificationDropdown, toggleRegisterModal, toggleProfileDropdown } from '../../../../store/features/modalSlice/toggleSlice';
+import { fetchUser } from '../../../../store/features/authSlice/authSlice';
 
 import ProfileMenu from './ProfileMenu';
+import LoginButtons from './LoginButtons';
 
 function Header() {
 
     const dispatch = useDispatch();
+    const token = localStorage.getItem('token');
 
-    const toggleDarkMode = () => {
-        setDarkMode(prevState => !prevState);
-        // console.log('darkMode: ', darkMode)
-    }
+    // get user from useSelector
 
-    const notificaition = useRef();
+    const user = useSelector(state => state.auth.user);
 
-    useEffect(() => {
+   
 
-
-    }, []);
+    console.log('user status in header.jsx: ', user);
 
     // end of header functions
     return (
@@ -45,11 +41,20 @@ function Header() {
                 </div>
 
 
-                {/* right profile and messages */}
+                {/* 
+                right profile and messages. EITHER show profile Menu OR show login, sign up options 
+                */}
 
-                <ProfileMenu className={'flex-1 bg-blue-40 h-full flex items-center justify-end relative flex-shrin-0'} />
+                {
+                    user.user
+                        ? <ProfileMenu className={'flex-1 bg-blue-40 h-full flex items-center justify-end relative flex-shrin-0'} />
+                        : <LoginButtons />
+                }
 
-                
+
+
+
+
                 {/* <div className='h-[1px] bg-black'>
             
         </div> */}

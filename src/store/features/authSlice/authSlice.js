@@ -7,71 +7,131 @@ const initialState = {
         user: null,
         loading: false,
         isError: false,
+        message: ''
     },
 
     token: null,
+
+    registration: {
+        isError: false,
+        loading: false,
+        message: '',
+        errors: {},
+        isSuccess: false
+    },
+
+    login: {
+        isError: false,
+        loading: false,
+        message: '',
+        errors: {},
+        isSuccess: false
+    }
 }
 
 const setToken = (token) => {
-    localStorage.setItem('token', null);
-
-    return token = localStorage.getItem('token');
+    localStorage.setItem('token', token);
 }
 
+const removeToken = () => {
+    localStorage.removeItem('token');
+}
+
+
+
+// if no token detected, delete the user from the userState
 
 const authSlice = createSlice({
     name: 'createSlice',
     initialState: initialState,
+    reducers: {
+        logout: (state) => {
+            removeToken();
+            state.user.user = null;
+        }
+    },
     extraReducers: builder => {
+        // login
         builder
-            .addCase(login.pending, (state, action) => {
-                state.user.loading = true;
+            .addCase(login.pending, (state, action) => {        // pending login
+                state.login.loading = true;
+                state.isSuccess = false;
             })
-            .addCase(
+            .addCase(                                   // fulfilled login
                 login.fulfilled, (state, action) => {
-                    const data = action.payload
-                    state.loading = false;
-                    state.user = data.user;
-                    setToken(data.token);
-                    state.token = data.token;
+                    const token = action.payload.token;
+                    setToken(token);
+                    state.login.isError = false;
+                    state.login.message = action.payload.message
+                    state.login.loading = false;
+                    state.isSuccess = true;
                 }
             )
-            .addCase(
-                login.rejected, (state, action) => {
-                    state.loading = false;
-                    state.isError = true;
-                    state.token = null;
-                    setToken(null);
+            .addCase(           // rejected login
+                login.rejected, (state, action) => {    // rejected login
+                    removeToken();
+                    state.login.isError = true;
+                    state.login.message = action.payload.message;
+                    state.login.errors = action.payload.message;
+                    state.login.loading = false;
                 }
             );
 
         // fetchUser
         builder
-            .addCase(fetchUser.pending, (state, action) => {
-                state.loading = true;
+            .addCase(fetchUser.pending, (state, action) => {    // pending 
+                // state.user.loading = true;
             })
-            .addCase(fetchUser.fulfilled, (state, action) => {
-                const data = action.payload;
+            .addCase(fetchUser.fulfilled, (state, action) => {      // fulfilled
 
-                state.user = data.user;
-                state.loading = false;
-                state.isError = false;
+                const payload = action.payload;
+                const userState = state.user;
+
+                userState.user = payload.user;
+                userState.isError = false;
+                userState.message = payload.message;
+                userState.loading = false;
             })
-            .addCase(fetchUser.rejected, (state, action) => {
-                state.user.isError = true;
+            .addCase(fetchUser.rejected, (state, action) => {       // rejected
+                // console.log('inside rejected fetchUser. action: ', action);
+                const userState = state.user;
+                const payload = action.payload;
+                userState.message = payload.message;
+
+                // state.message = action.payload.message;
+
+
                 state.user.loading = false;
-                state.token = null;
             });
 
+        // register
         builder
-            .addCase(register.pending, (state, action) => {
-                state.user.loading = true;
+            .addCase(register.pending, (state, action) => {     // pending registration
+                state.registration.loading = true;
+                state.registration.isError = true;
+                state.registration.errors = {};
+                state.isSuccess = false;
             })
-            .addCase(register.fulfilled, (state, action) => {
-                const user = action.payload;
-                state.user = user;
-                state.loading = false;
-                setToken(user.token);
+            .addCase(register.fulfilled, (state, action) => {   // fulfilled registration
+                // add to the global user variable 
+                const register = state.registration;
+                const payload = action.payload;
+
+                setToken(payload.token);
+                register.errors = {};
+                register.loading = false;
+                register.isError = false;
+                register.isSuccess = true;
+            })
+            .addCase(register.rejected, (state, action) => {    //rejected registration
+                const register = state.registration;
+                const payload = action.payload
+
+                removeToken();
+                register.isError = true;
+                register.errors = payload.errors
+                register.loading = false;
+
             })
 
     }
@@ -79,39 +139,69 @@ const authSlice = createSlice({
 })
 
 
-// fetch
-export const fetchUser = createAsyncThunk(
-    'user/fetchUser',
-    async () => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            throw new Error('Token not found');
+export const register = createAsyncThunk(
+    'register/getRegister',
+    async (formData, { rejectWithValue }) => {
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/api/register', formData);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+            return rejectWithValue(error.response.data);
         }
-        const data = await axios.get('http://127.0.0.1:8000/api/getUser', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        return data;
     }
 )
+
+
+// fetch user
+export const fetchUser = createAsyncThunk(
+    'user/fetchUser',
+    async (_, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                return rejectWithValue({ message: 'Token not found' });
+            }
+            const response = await axios.get('http://127.0.0.1:8000/api/user', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            return response.data;
+        } catch (e) {
+            if (e.response) {
+                return rejectWithValue(e.response.data);
+            } else if (e.reqeust) {
+                return rejectWithValue({ message: 'No response from the server' });
+            } else {
+                return rejectWithValue({ message: 'Unknown error' });
+            }
+        }
+    }
+)
+
 
 // verify credentials and set token if correct
 export const login = createAsyncThunk(
     'login/getLogin',
-    async (formData) => {
-        const data = await axios.post('http://127.0.0.1:8000/api/login', formData)
-        return data.data;
+    async (formData, { rejectWithValue }) => {
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/api/login', formData);
+            return response.data;
+        } catch (error) {
+            if (error.response && error.response.data) {
+                return rejectWithValue(error.response.data);
+            }
+            return rejectWithValue({ message: 'Error loggin in user' })
+
+        }
+
     }
 )
 
 
-export const register = createAsyncThunk(
-    'register/getRegister',
-    async (formData) => {
-        const data = await axios.post('http://127.0.0.1:8000/api/login', formData)
-        return data.data;
-    }
-)
 
+
+
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

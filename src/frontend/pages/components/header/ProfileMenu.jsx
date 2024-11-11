@@ -3,30 +3,15 @@ import { RiAdvertisementLine } from "react-icons/ri";
 import { AiOutlineMessage } from "react-icons/ai";
 import { FaPlus, FaRegBell } from "react-icons/fa6";
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from "react-redux";
 
-import { toggleNotificationDropdown, toggleRegisterModal, toggleProfileDropdown } from '../../../store/features/modalSlice/toggleSlice';
+import { toggleNotificationDropdown, toggleProfileDropdown } from '../../../../store/features/modalSlice/toggleSlice';
 
 function ProfileMenu({ className }) {
 
 
     const dispatch = useDispatch();
-
-
-    const notificationbuttonRef = useRef();
-    // notification
-    // useEffect(() => {
-    //     document.addEventListener('mousedown', (e) => {
-    //         if (notificationbuttonRef.current && !notificationbuttonRef.current.contains(e.target)) {
-    //             // console.log('condition satisfied');
-    //             dispatch(toggleProfileDropdown(false));
-
-    //         } else {
-    //             console.log('condition failed');
-    //         }
-    //     })
-    // }, [])
 
     return (
         <div className={`${className}`}>
@@ -46,18 +31,18 @@ function ProfileMenu({ className }) {
 
                 {/* Notification */}
                 <span
-                    ref={notificationbuttonRef}
-                    onClick={() => {
-                        dispatch(toggleNotificationDropdown())
-                    }}
+                    id="notificationButton"
+                    onClick={() => { dispatch(toggleNotificationDropdown()) }}
+
                     className='cursor-pointer hover:bg-slate-400 delay-75 p-2 rounded-full'>
                     <FaRegBell className='text-2xl' />
                 </span>
 
                 {/* End of notification */}
 
-
+                {/* Profile Dropdown */}
                 <button
+                    id="profileButton"
                     onClick={() => dispatch(toggleProfileDropdown())}
                     className='cursor-pointer hover:bg-slate-400 delay-75 flex items-center h-10 w-10 p-[2px] rounded-full relative select-none'
                 >
@@ -65,13 +50,7 @@ function ProfileMenu({ className }) {
 
                 </button>
 
-
-
-                <span
-                    onClick={() => dispatch(toggleRegisterModal())}
-                    className='cursor-pointer hover:bg-slate-400 delay-75 p-2 rounded-full'>
-                    Register
-                </span>
+                {/* End of profile drpodown */}
 
 
 

@@ -1,81 +1,95 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { toggleRegisterModal } from '../../store/features/modalSlice/toggleSlice';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleLoginModal, toggleRegisterModal } from '../../../store/features/modalSlice/toggleSlice';
 
+import { login } from '../../../store/features/authSlice/authSlice';
 import { FaGoogle, FaApple } from "react-icons/fa";
 import { RxCross1 } from "react-icons/rx";
-import { register } from '../../store/features/authSlice/authSlice';
+function Login({ className }) {
 
+    const dispatch = useDispatch();
 
-
-function SignUp({ className }) {
-
-    // UI textfield animations
+    // text input UI part
     const [emailToggle, setEmailToggle] = useState(false);
     const [psaswordToggle, setPasswordToggle] = useState(false);
-    const [confirmPasswordToggle, setConfirmPasswordToggle] = useState(false);
 
 
-    // form data section
+    // send post data through API
+
     const [formData, setFormData] = useState({
         email: '',
-        password: '',
-        confirmPassword: ''
+        password: ''
 
     })
 
-    const clearFormData = () => {
-        setFormData({});
-    }
-
-    // this goes to redux from where asyncCreateThunk will handle it
-    const handleSubmitForm = (e) => {
+    const loginDetails = useSelector(state => state.auth.login);
+    const handleSubmitForm = async (e) => {
         e.preventDefault();
-        register(formData);
-        // clearFormData();
+        try {
+            const resultAction = await dispatch(login(formData)).unwrap();
+            setFormData({})
+            dispatch(toggleLoginModal(false));
+        } catch (error) {
+            console.log('Login failed. ', error);
+        }
+
 
     }
-    const registerModalRef = useRef();
 
-    //  UI toggle signup modal code here
-    const modal = useSelector(state => state.toggleSlice)
-    const dispatch = useDispatch();
+    const errors = useSelector(state => state.auth.login.message);
+    // end of fetch data through API
 
+
+    // ####################### toggle UI part #######################
+    const showLogin = useSelector(state => state.toggleSlice.showLogin)
+
+    const loginModalRef = useRef();
+    const loginElement = document.getElementById('loginButton');
 
     const handleClickOutside = (e) => {
-        if (registerModalRef.current && !registerModalRef.current.contains(e.target)) {
-            dispatch(toggleRegisterModal(false));
+        if (
+            showLogin
+            && loginElement && !loginElement.contains(e.target)
+            && loginModalRef.current && !loginModalRef.current.contains(e.target)
+        ) {
+            dispatch(toggleLoginModal(false));
+        }
+
+    }
+
+
+    useEffect(() => {
+        if (showLogin) {
+            document.addEventListener('click', handleClickOutside);
+        } else {
+            document.removeEventListener('click', handleClickOutside);
         }
 
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('click', handleClickOutside);
         }
+
+    }, [showLogin])
+
+    const user = useSelector(state => state.auth.user);
+    if (user?.user) {
+        return <></>
     }
-
-    // registers event at the start of the run
-    useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
-    }, []);
-    // close modal useRef section
-
-
-
-    if (modal.showRegister) {
+    // ####################### end of toggle UI part   #######################
+    if (showLogin) {
         return (
-            <div
-                className={`bg-gray-400 bg-opacity-50 h-screen w-screen z-50 top-0 fixed flex justify-center items-center ${className} overflow-auto`}>
+            <div className={`bg-gray-400 bg-opacity-50 h-screen w-screen z-50 top-0 fixed flex justify-center items-center ${className}`}>
 
                 {/* Actual modal box */}
                 <div
-                    ref={registerModalRef}
-                    className=' bg-white max-h-[664px] h-[664px] flex flex-col justify-center rounded-xl shadow-2xl w-[550px] '>
+                    ref={loginModalRef}
+                    className=' max-h-[600px] h-[600px] flex flex-col justify-center rounded-xl shadow-2xl w-[550px] bg-white'>
 
                     {/* Cross */}
 
                     <div className='bg-green-40 py-4 px-4 flex items-center justify-end'>
                         <span
-                            onClick={() => dispatch(toggleRegisterModal(false))}
+                            onClick={() => dispatch(toggleLoginModal(false))}
                             className='text-xl p-2 rounded-full bg-gray-200 hover:bg-custom-gray-dark cursor-pointer'>
                             <RxCross1 />
                         </span>
@@ -84,7 +98,7 @@ function SignUp({ className }) {
 
                     {/* main part */}
                     <div className='bg-red-40 overflow-auto flex-grow md:px-20 px-14 flex flex-col gap-3'>
-                        <div className='text-2xl font-bold select-none'>Register</div>
+                        <div className='text-2xl font-bold select-none'>Log In</div>
 
                         <div className='text-sm text-gray-600'>
                             By continuing, you agree to our User Agreement and acknowledge that you understnad the privace policy.
@@ -95,10 +109,10 @@ function SignUp({ className }) {
                             <span> Continue with Google</span>
                         </div>
 
-                        <div className=' border p-2 rounded-2xl border-gray-400 relative flex justify-center items-center'>
+                        {/* <div className=' border p-2 rounded-2xl border-gray-400 relative flex justify-center items-center'>
                             <div className='absolute left-2 text-lg'><FaApple /></div>
                             <span> Continue with Apple</span>
-                        </div>
+                        </div> */}
 
                         <div className='flex items-center gap-5'>
                             <div className='h-[1px] w-full bg-gray-300' />
@@ -106,16 +120,16 @@ function SignUp({ className }) {
                             <div className='h-[1px] w-full bg-gray-300' />
 
                         </div>
-
-                        {/* Form part */}
-                        {/* email and password */}
-
-                        <form onSubmit={handleSubmitForm} id='register-form'>
+                        <form onSubmit={handleSubmitForm} id='loginForm'>
                             <div className='flex flex-col gap-3'>
-                                {/* email */}
-                                <div className='bg-red-400 rounded-2xl relative flex justify-between items-center'>
+                                <div className=' rounded-2xl relative flex justify-between items-center'>
                                     <span className={`absolute pointer-events-none left-3 text-md text-gray-500 transition-all duration-100  ${(emailToggle || formData.email) ? 'text-xs top-2' : ''}`}>
-                                        Email <span className='text-red-600'>*</span>
+                                        {
+                                            errors
+                                                ? <span className='text-red-600'> {errors}</span>
+                                                : (<>Email or username <span className='text-red-600'>*</span></>)
+                                        }
+
                                     </span>
                                     <input
                                         className='bg-custom-gray w-full rounded-2xl px-3 pt-6 pb-2 focus:outline-none focus:border-blue-400 border'
@@ -128,8 +142,6 @@ function SignUp({ className }) {
                                     />
                                 </div>
 
-
-                                {/* Confirm Password */}
                                 <div className='relative flex items-center'>
                                     <span className={`absolute left-3 text-gray-500 transition-all duration-100 pointer-events-none ${psaswordToggle || formData.password ? 'text-xs top-2' : ''}`}>Enter password <span className='text-red-600'>*</span></span>
                                     <input
@@ -139,47 +151,44 @@ function SignUp({ className }) {
                                         onChange={e => setFormData({ ...formData, password: e.target.value })}
                                     />
                                 </div>
-
-
-                                {/* Confirm password */}
-                                <div className='relative flex items-center'>
-                                    <span className={`absolute left-3 text-gray-500 transition-all duration-100 pointer-events-none ${confirmPasswordToggle || formData.confirmPassword ? 'text-xs top-2' : ''}`}>Confirm Password <span className='text-red-600'>*</span></span>
-                                    <input
-                                        onFocus={() => { setConfirmPasswordToggle(true) }}
-                                        onBlur={() => setConfirmPasswordToggle(false)}
-                                        className='bg-custom-gray w-full rounded-2xl px-3 pt-6 pb-2 focus:outline-none focus:border-blue-400 border'
-                                        onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
-                                    />
-                                </div>
-
                             </div>
+
 
                         </form>
 
+
+
                         <div className='text-blue-500 text-sm pt-3'>
-                            Back to Login
+                            Forgot Password?
 
                         </div>
+
+                        <div className='text-sm'>
+                            New to Reddit? <span className='text-blue-500'> Sign Up</span>
+                        </div>
+
 
                     </div>
 
                     <div className='md:py-6 md:px-20 py-6 px-14 flex items-center flex-grow-0'>
                         <button
-                            form='register-form' className='bg-indigo-600 w-full hover:bg-indigo-700 rounded-2xl px-3 py-3 text-white font-semibold'>
-                            Sign Up
+                            disabled={loginDetails.loading}
+                            form='loginForm'
+                            className={`bg-indigo-600 w-full hover:bg-indigo-700 rounded-2xl px-3 py-3 text-white font-semibold ${loginDetails.loading ? 'bg-indigo-700' : ''}`}>
+                            Log in
                         </button>
                     </div>
                 </div>
 
 
-            </div>
+            </div >
 
         )
     }
 
 }
 
-export default SignUp
+export default Login
 
 
 // md:py-10 md:px-20 py-10 px-14

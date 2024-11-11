@@ -5,7 +5,8 @@ const initialState = {
     showRegister: false,
     showLogin: false,
     showNotificationDropdown: false,
-    showProfileDropdown: false
+    showProfileDropdown: false,
+    showDarkMode: false
 }
 
 const toggeleSlice = createSlice({
@@ -16,16 +17,16 @@ const toggeleSlice = createSlice({
         toggleRegisterModal: (state, action) => {
 
             // if explicitly false, close the modal immediately
-            if (action.payload == false) {
-                state.showRegister = false;
+            if (action.payload) {
+                state.showLogin = action.payload;
                 return;
             }
             state.showRegister = !state.showRegister;
         },
 
-        toglgeSignupModal: (state, action) => {
-            if (action.payload == false) {
-                state.showLogin = false;
+        toggleLoginModal: (state, action) => {
+            if (action.payload) {
+                state.showLogin = action.payload;
                 return;
             }
             state.showLogin = !state.showLogin;
@@ -33,13 +34,12 @@ const toggeleSlice = createSlice({
 
         // notification
         toggleNotificationDropdown: (state, action) => {
-            if (action.payload == false) {
-                state.showNotificationDropdown = false;
+            if (action.payload) {
+                state.showNotificationDropdown = action.payload;
                 return;
             }
             state.showNotificationDropdown = !state.showNotificationDropdown;
 
-            console.log('notification status; ', state.showNotificationDropdown);
         },
 
         toggleProfileDropdown: (state, action) => {
@@ -48,10 +48,13 @@ const toggeleSlice = createSlice({
                 return;
             }
             state.showProfileDropdown = !state.showProfileDropdown;
-        }
+        },
 
+        toggleDarkMode: state => {
+            state.showDarkMode = !state.showDarkMode;
+        }
     }
 })
 
-export const { toggleRegisterModal, toggleLoginModal, toggleNotificationDropdown, toggleProfileDropdown } = toggeleSlice.actions;
+export const { toggleRegisterModal, toggleLoginModal, toggleNotificationDropdown, toggleProfileDropdown, toggleDarkMode } = toggeleSlice.actions;
 export default toggeleSlice.reducer;
