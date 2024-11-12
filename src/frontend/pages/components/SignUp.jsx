@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { FaGoogle, FaApple } from "react-icons/fa";
 import { RxCross1 } from "react-icons/rx";
-import { register } from '../../../store/features/authSlice/authSlice';
+import { clearRegister, fetchUser, register } from '../../../store/features/authSlice/authSlice';
 
 
 
@@ -16,12 +16,21 @@ function SignUp({ className }) {
     // form data section
     const [formData, setFormData] = useState({
         email: '',
-        username: '',
+        name: '',
         password: '',
         password_confirmation: ''
 
     });
 
+    const clearFormData = () => {
+        setFormData({
+            email: '',
+            name: '',
+            password: '',
+            password_confirmation: ''
+
+        });
+    }
 
     const userDetails = useSelector(state => state.auth.registration);
     // this goes to redux from where asyncCreateThunk will handle it
@@ -30,17 +39,21 @@ function SignUp({ className }) {
         dispatch(register(formData));
     }
 
+    const registerModal = useSelector(state => state.toggleSlice.showRegister)
+
     // see Login.jusx for alternate method of closing modal after success
     useEffect(() => {
         if (userDetails.isSuccess) {
+            dispatch(toggleRegisterModal(false));
             setFormData({});
-            dispatch(toggleRegisterModal());
+            console.log('toggle register modal value: ', registerModal);
         }
     }, [userDetails.isSuccess])
 
     const errors = useSelector(state => state.auth.registration.errors);
     const loading = useSelector(state => state.auth.registration.loading);
 
+    const userRegister = useSelector(state => state.auth.user);
 
 
 
@@ -51,7 +64,7 @@ function SignUp({ className }) {
 
     // UI textfield animations
     const [emailToggle, setEmailToggle] = useState(false);
-    const [usernameToggle, setUsernameToggle] = useState(false);
+    const [name, setName] = useState(false);
     const [psaswordToggle, setPasswordToggle] = useState(false);
     const [confirmPasswordToggle, setConfirmPasswordToggle] = useState(false);
 
@@ -74,11 +87,13 @@ function SignUp({ className }) {
             && registerElement && !registerElement.contains(e.target)
             && registerModalRef.current && !registerModalRef.current.contains(e.target)
         ) {
-            dispatch(toggleRegisterModal());
+            dispatch(toggleRegisterModal(false));
+            clearFormData();
+            dispatch(clearRegister());
         }
     }
 
-    // registers event at the start of the run
+    // registers event at the start of the run to close the modal when clicked outside
     useEffect(() => {
         if (modal.showRegister) {
             document.addEventListener('click', handleClickOutside);
@@ -165,7 +180,7 @@ function SignUp({ className }) {
                                 <div className='bg-red-400 rounded-2xl relative flex justify-between items-center'>
                                     <span className={`absolute pointer-events-none left-3 text-md text-gray-500 transition-all duration-100  ${(emailToggle || formData.email) ? 'text-xs top-2' : ''}`}>
                                         {
-                                            errors.email ?
+                                            errors?.email ?
                                                 (
                                                     <span className='text-red-600'>
                                                         {errors.email[0]}
@@ -190,12 +205,12 @@ function SignUp({ className }) {
 
 
                                 <div className='bg-red-400 rounded-2xl relative flex justify-between items-center'>
-                                    <span className={`absolute pointer-events-none left-3 text-md text-gray-500 transition-all duration-100  ${(usernameToggle || formData.username) ? 'text-xs top-2' : ''}`}>
+                                    <span className={`absolute pointer-events-none left-3 text-md text-gray-500 transition-all duration-100  ${(name || formData.name) ? 'text-xs top-2' : ''}`}>
                                         {
-                                            errors.username ?
+                                            errors?.name ?
                                                 (
                                                     <span className='text-red-600'>
-                                                        {errors.username[0]}
+                                                        {errors.name[0]}
                                                     </span>
                                                 )
                                                 : (
@@ -205,12 +220,12 @@ function SignUp({ className }) {
                                     </span>
                                     <input
                                         className='bg-custom-gray w-full rounded-2xl px-3 pt-6 pb-2 focus:outline-none focus:border-blue-400 border'
-                                        onFocus={() => { setUsernameToggle(true) }}
-                                        onBlur={() => { setUsernameToggle(false) }}
+                                        onFocus={() => { setName(true) }}
+                                        onBlur={() => { setName(false) }}
                                         onChange={(e) => {
-                                            setFormData({ ...formData, username: e.target.value })
+                                            setFormData({ ...formData, name: e.target.value })
                                         }}
-                                        value={formData.username}
+                                        value={formData.name}
                                     />
                                 </div>
 
@@ -221,7 +236,7 @@ function SignUp({ className }) {
                                 <div className='relative flex items-center'>
                                     <span className={`absolute left-3 text-gray-500 transition-all duration-100 pointer-events-none ${psaswordToggle || formData.password ? 'text-xs top-2' : ''}`}>
                                         {
-                                            errors.password ?
+                                            errors?.password ?
                                                 (
                                                     <span className='text-red-600'>
                                                         {errors.password[0]}
@@ -270,7 +285,7 @@ function SignUp({ className }) {
                     <div className='md:py-6 md:px-20 py-6 px-14 flex items-center flex-grow-0'>
                         <button
                             disabled={loading}
-                            form='register-form' className='bg-indigo-600 w-full hover:bg-indigo-700 rounded-2xl px-3 py-3 text-white font-semibold'>
+                            form='register-form' className={`bg-indigo-600 w-full hover:bg-indigo-700 rounded-2xl px-3 py-3 text-white font-semibold ${loading ? 'bg-indigo-700' : ''}`}>
                             Sign Up
                         </button>
                     </div>

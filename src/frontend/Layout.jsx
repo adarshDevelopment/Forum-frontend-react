@@ -48,7 +48,8 @@ function Home() {
 
     // token and fetchUser
 
-    const token = localStorage.getItem('token');
+    // const token = localStorage.getItem('token');
+    const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -58,7 +59,7 @@ function Home() {
     // console.log('user in layout: ', user)
 
     // console.log('user from layout: ', user);
-    if (user?.loading) {
+    if (user.loading) {
         return <></>
     } else {
         return (
@@ -90,6 +91,7 @@ function Home() {
                     <Sidebar />
 
 
+
                     {/* center main grid */}
                     <main className='bg-green-40 col-span-8 flex flex-col relative'>
 
@@ -102,9 +104,9 @@ function Home() {
 
                     {/* right side */}
 
-                    {/* <div className='col-span-2 bg-pink-400 sticky top-16 h-[calc(100vh-64px)] '>
-            second div
-        </div> */}
+                    <div className='col-span-2 bg-pink-400 sticky top-16 h-[calc(100vh-64px)] '>
+                        second div
+                    </div>
 
 
 

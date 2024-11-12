@@ -1,14 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react'
-
 import { CiSearch } from "react-icons/ci";
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { toggleNotificationDropdown, toggleRegisterModal, toggleProfileDropdown } from '../../../../store/features/modalSlice/toggleSlice';
+import { toggleNotificationDropdown, toggleProfileDropdown } from '../../../../store/features/modalSlice/toggleSlice';
 import { fetchUser } from '../../../../store/features/authSlice/authSlice';
 
 import ProfileMenu from './ProfileMenu';
 import LoginButtons from './LoginButtons';
+import { useState } from "react";
 
 function Header() {
 
@@ -19,9 +18,9 @@ function Header() {
 
     const user = useSelector(state => state.auth.user);
 
-   
-
-    console.log('user status in header.jsx: ', user);
+    useState(() => {
+        // dispatch(fetchUser());
+    }, [token])
 
     // end of header functions
     return (
@@ -45,14 +44,15 @@ function Header() {
                 right profile and messages. EITHER show profile Menu OR show login, sign up options 
                 */}
 
+
+                {/* 
+                <ProfileMenu />
+                <LoginButtons /> */}
                 {
                     user.user
                         ? <ProfileMenu className={'flex-1 bg-blue-40 h-full flex items-center justify-end relative flex-shrin-0'} />
                         : <LoginButtons />
                 }
-
-
-
 
 
                 {/* <div className='h-[1px] bg-black'>

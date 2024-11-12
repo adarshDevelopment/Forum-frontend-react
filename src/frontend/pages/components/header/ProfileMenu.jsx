@@ -3,8 +3,8 @@ import { RiAdvertisementLine } from "react-icons/ri";
 import { AiOutlineMessage } from "react-icons/ai";
 import { FaPlus, FaRegBell } from "react-icons/fa6";
 
-import { useEffect } from 'react';
-import { useDispatch } from "react-redux";
+
+import { useDispatch, useSelector } from "react-redux";
 
 import { toggleNotificationDropdown, toggleProfileDropdown } from '../../../../store/features/modalSlice/toggleSlice';
 
@@ -12,6 +12,9 @@ function ProfileMenu({ className }) {
 
 
     const dispatch = useDispatch();
+
+    const user = useSelector(state => state.auth.user);
+    // console.log('user in profile menu: ', user);
 
     return (
         <div className={`${className}`}>

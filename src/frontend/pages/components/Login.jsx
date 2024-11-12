@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleLoginModal, toggleRegisterModal } from '../../../store/features/modalSlice/toggleSlice';
+import { toggleLoginModal } from '../../../store/features/modalSlice/toggleSlice';
 
-import { login } from '../../../store/features/authSlice/authSlice';
+import { clearLogin, login } from '../../../store/features/authSlice/authSlice';
 import { FaGoogle, FaApple } from "react-icons/fa";
 import { RxCross1 } from "react-icons/rx";
+
+import { fetchUser } from '../../../store/features/authSlice/authSlice';
 function Login({ className }) {
 
     const dispatch = useDispatch();
@@ -22,21 +24,29 @@ function Login({ className }) {
 
     })
 
+    const clearFormData = () => {
+        setFormData({
+            email: '',
+            password: ''
+        })
+    }
+
     const loginDetails = useSelector(state => state.auth.login);
     const handleSubmitForm = async (e) => {
         e.preventDefault();
         try {
             const resultAction = await dispatch(login(formData)).unwrap();
-            setFormData({})
+            clearFormData();
+            dispatch(clearLogin());
             dispatch(toggleLoginModal(false));
         } catch (error) {
-            console.log('Login failed. ', error);
+            // console.log('Login failed. ', error);
         }
 
 
     }
 
-    const errors = useSelector(state => state.auth.login.message);
+    const errors = useSelector(state => state.auth.login.errors);
     // end of fetch data through API
 
 
@@ -52,7 +62,9 @@ function Login({ className }) {
             && loginElement && !loginElement.contains(e.target)
             && loginModalRef.current && !loginModalRef.current.contains(e.target)
         ) {
+            clearFormData();
             dispatch(toggleLoginModal(false));
+            dispatch(clearLogin());
         }
 
     }

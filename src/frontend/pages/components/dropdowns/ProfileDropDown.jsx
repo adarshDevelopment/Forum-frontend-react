@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleProfileDropdown } from '../../../../store/features/modalSlice/toggleSlice';
 import DarkMode from './DarkMode';
-import { logout } from '../../../../store/features/authSlice/authSlice';
+import { fetchUser, logout } from '../../../../store/features/authSlice/authSlice';
 
 function ProfileDropDown() {
 
@@ -59,7 +59,7 @@ function ProfileDropDown() {
 
                 <div className='px-7 py-4 hover:bg-indigo-500 hover:text-white cursor-pointer border-b border-gray-400 flex flex-col '>
                     <span>View Profile</span>
-                    <span className='text-sm text-gray-600 '>{user?.username}</span>
+                    <span className='text-sm text-gray-600 '>{user?.name}</span>
                 </div>
 
                 <span className='px-7 py-4 hover:bg-indigo-500 hover:text-white cursor-pointer'>Edit Avatar</span>
@@ -70,7 +70,11 @@ function ProfileDropDown() {
 
 
                 <span
-                    onClick={() => dispatch(logout())}
+                    onClick={() => {
+                        dispatch(logout());
+                        dispatch(toggleProfileDropdown(false));
+                        dispatch(fetchUser());
+                    }}
                     className='px-7 py-4 hover:bg-indigo-500 hover:text-white cursor-pointer'>
                     Log Out
                 </span>

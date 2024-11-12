@@ -7,7 +7,8 @@ const initialState = {
         user: null,
         loading: false,
         isError: false,
-        message: ''
+        message: '',
+        isSuccess: false
     },
 
     token: null,
@@ -16,7 +17,7 @@ const initialState = {
         isError: false,
         loading: false,
         message: '',
-        errors: {},
+        errors: null,
         isSuccess: false
     },
 
@@ -24,7 +25,7 @@ const initialState = {
         isError: false,
         loading: false,
         message: '',
-        errors: {},
+        errors: null,
         isSuccess: false
     }
 }
@@ -48,21 +49,35 @@ const authSlice = createSlice({
         logout: (state) => {
             removeToken();
             state.user.user = null;
+            state.token = null;
+            state.login = initialState.login;
+            state.registration = initialState.registration;
+
+        },
+        clearLogin: (state) => {
+            state.login = initialState.login;
+        },
+        clearRegister: state => {
+            state.registration = initialState.registration;
         }
+
     },
+
     extraReducers: builder => {
         // login
         builder
             .addCase(login.pending, (state, action) => {        // pending login
                 state.login.loading = true;
-                state.isSuccess = false;
+                // console.log('message in login pending: ', state.login.message);
             })
             .addCase(                                   // fulfilled login
                 login.fulfilled, (state, action) => {
                     const token = action.payload.token;
                     setToken(token);
+                    state.token = token;
                     state.login.isError = false;
-                    state.login.message = action.payload.message
+                    state.login.message = action.payload.message;
+                    state.login.errors = action.payload.message;
                     state.login.loading = false;
                     state.isSuccess = true;
                 }
@@ -79,28 +94,32 @@ const authSlice = createSlice({
 
         // fetchUser
         builder
-            .addCase(fetchUser.pending, (state, action) => {    // pending 
-                // state.user.loading = true;
+            .addCase(fetchUser.pending, (state, action) => {    // pending  user
+                state.user.loading = true;
             })
-            .addCase(fetchUser.fulfilled, (state, action) => {      // fulfilled
+            .addCase(fetchUser.fulfilled, (state, action) => {      // fulfilled fetchUser
 
                 const payload = action.payload;
                 const userState = state.user;
 
                 userState.user = payload.user;
+                state.user.isSuccess = true;
+
                 userState.isError = false;
                 userState.message = payload.message;
                 userState.loading = false;
             })
-            .addCase(fetchUser.rejected, (state, action) => {       // rejected
+            .addCase(fetchUser.rejected, (state, action) => {       // rejected fetchUser
                 // console.log('inside rejected fetchUser. action: ', action);
                 const userState = state.user;
                 const payload = action.payload;
                 userState.message = payload.message;
 
+                userState.user = null;
+
                 // state.message = action.payload.message;
 
-
+                state.user.isSuccess = false;
                 state.user.loading = false;
             });
 
@@ -118,6 +137,7 @@ const authSlice = createSlice({
                 const payload = action.payload;
 
                 setToken(payload.token);
+                state.token = payload.token;
                 register.errors = {};
                 register.loading = false;
                 register.isError = false;
@@ -129,7 +149,7 @@ const authSlice = createSlice({
 
                 removeToken();
                 register.isError = true;
-                register.errors = payload.errors
+                register.errors = payload?.errors
                 register.loading = false;
 
             })
@@ -146,7 +166,7 @@ export const register = createAsyncThunk(
             const response = await axios.post('http://127.0.0.1:8000/api/register', formData);
             return response.data;
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             return rejectWithValue(error.response.data);
         }
     }
@@ -203,5 +223,5 @@ export const login = createAsyncThunk(
 
 
 
-export const { logout } = authSlice.actions;
+export const { logout, clearLogin, clearRegister } = authSlice.actions;
 export default authSlice.reducer;

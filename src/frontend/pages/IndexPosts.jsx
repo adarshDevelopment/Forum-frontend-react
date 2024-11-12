@@ -20,8 +20,16 @@ function IndexPosts() {
     return (
         <main className='bg-green-40 col-span-8 flex flex-col relative'>
 
-            <center className='flex-grow flex-shrink-0 p-5'>
+            <center className='flex-grow flex-shrink-0 p-5 bg-red-400'>
+
+                <div className='w-[100%] bg-yellow-400 text-start'>
+                    Hello world
+                </div>
+
                 {
+
+
+
                     data ?
                         // <>hello</>
 
