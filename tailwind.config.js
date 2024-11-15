@@ -9,7 +9,8 @@ export default {
       colors: {
         'custom-gray': '#DBE4E9',
         'custom-gray-dark': '#E5EBEE',
-        'custom-gray-light': '#F6F8F9'
+        'custom-gray-light': '#F6F8F9',
+        'custom-gray-orange': '#EAE8DB'
       }
     },
   },

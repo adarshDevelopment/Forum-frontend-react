@@ -18,10 +18,6 @@ function Header() {
 
     const user = useSelector(state => state.auth.user);
 
-    useState(() => {
-        // dispatch(fetchUser());
-    }, [token])
-
     // end of header functions
     return (
         <header className='flex-grow-0 flex shrink-0 overflow-hidden h-16 top-0 w-full left-0 border-b bg-white  z-10 fixed justify-between'>

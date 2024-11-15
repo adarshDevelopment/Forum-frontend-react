@@ -2,6 +2,7 @@
 import { RiAdvertisementLine } from "react-icons/ri";
 import { AiOutlineMessage } from "react-icons/ai";
 import { FaPlus, FaRegBell } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 
 import { useDispatch, useSelector } from "react-redux";
@@ -27,9 +28,11 @@ function ProfileMenu({ className }) {
                     <AiOutlineMessage className='text-2xl' />
                 </span>
 
-                <span className='cursor-pointer hover:bg-slate-400 delay-75 flex items-center gap-2 rounded-full py-2 px-3 justify-between font-semibold '><FaPlus />
+                <Link
+                    to={'/create_post'}
+                    className='cursor-pointer hover:bg-slate-400 delay-75 flex items-center gap-2 rounded-full py-2 px-3 justify-between font-semibold '><FaPlus />
                     Create
-                </span>
+                </Link>
 
 
                 {/* Notification */}

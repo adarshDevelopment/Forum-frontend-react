@@ -8,17 +8,18 @@ const initialState = {
         loading: false,
         isError: false,
         message: '',
-        isSuccess: false
+        isSuccess: false,
+        started: false
     },
 
-    token: null,
+    token: localStorage.getItem('token'),
 
     registration: {
         isError: false,
         loading: false,
         message: '',
         errors: null,
-        isSuccess: false
+        isSuccess: false,
     },
 
     login: {
@@ -96,6 +97,8 @@ const authSlice = createSlice({
         builder
             .addCase(fetchUser.pending, (state, action) => {    // pending  user
                 state.user.loading = true;
+                state.user.started = true;
+
             })
             .addCase(fetchUser.fulfilled, (state, action) => {      // fulfilled fetchUser
 
@@ -108,6 +111,8 @@ const authSlice = createSlice({
                 userState.isError = false;
                 userState.message = payload.message;
                 userState.loading = false;
+
+
             })
             .addCase(fetchUser.rejected, (state, action) => {       // rejected fetchUser
                 // console.log('inside rejected fetchUser. action: ', action);

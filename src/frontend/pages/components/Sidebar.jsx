@@ -5,9 +5,11 @@ import { MdOutlineTravelExplore, MdOutlineAddchart, MdOutlineThumbUpAlt, MdOutli
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import { HiPlus } from "react-icons/hi2";
 
+import { Link } from 'react-router-dom';
 
 
-function Sidebar() {
+
+function Sidebar({ className }) {
 
     const [customFeedsAccordion, setCustomFeedsAccordion] = useState(false);
     const [recentAccordion, setRecentAccrecentAccordion] = useState(false);
@@ -16,17 +18,16 @@ function Sidebar() {
 
 
     return (
-        <aside className='bg-blue-40 border-r col-span-2 sticky top-16 h-[calc(100vh-64px)] overflow-y-auto'>
+        <aside className={`bg-blue-40 border-r col-span-2 sticky top-16 h-[calc(100vh-64px)] overflow-y-auto ${className}`}>
             {/* scrollable sidebar */}
             <div className=' h-full flex flex-col px-5 bg-green-40'>
-
                 {/* home, popular, explore, all */}
                 <div className='flex flex-col justify-center p-3 text-xl border-b'>
 
-                    <div className='flex justify-start items-center gap-2  cursor-pointer hover:bg-gray-200 p-3'>
+                    <Link to={'/'} className='flex justify-start items-center gap-2  cursor-pointer hover:bg-gray-200 p-3'>
                         <span> <IoHomeOutline /></span>
                         <span>Home</span>
-                    </div>
+                    </Link>
 
                     <div className='flex justify-start items-center gap-2  cursor-pointer hover:bg-gray-200 p-3'>
                         <span><IoMdGlobe /></span>

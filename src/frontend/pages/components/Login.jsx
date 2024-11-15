@@ -165,9 +165,7 @@ function Login({ className }) {
                                 </div>
                             </div>
 
-
                         </form>
-
 
 
                         <div className='text-blue-500 text-sm pt-3'>
@@ -178,7 +176,6 @@ function Login({ className }) {
                         <div className='text-sm'>
                             New to Reddit? <span className='text-blue-500'> Sign Up</span>
                         </div>
-
 
                     </div>
 

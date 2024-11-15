@@ -21,30 +21,14 @@ import SignUp from './pages/components/SignUp';
 
 
 import { Outlet } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import CreatePost from './pages/posts/CreatePost';
 
 
 
 function Home() {
 
     const user = useSelector(state => state.auth.user);
-    // header functions
-
-    const [toggleProfile, setToggleProfile] = useState(false);
-    const [toggleNotification, setToggleNotification] = useState(false);
-
-    const profileButtonRef = useRef(null)       // returns object: {current: null}
-    const profileDropDownRef = useRef(null);
-
-    const notificationButtonRef = useRef(null);
-    const notificationDropDownRef = useRef(null);
-
-
-    const toggleDarkMode = () => {
-        setDarkMode(prevState => !prevState);
-        // console.log('darkMode: ', darkMode)
-    }
-
-    // end of header functions
 
     // token and fetchUser
 
@@ -87,31 +71,35 @@ function Home() {
 
 
 
+                    {/* ######################################################################################################################################################################## */}
+
                     {/* Left grid */}
-                    <Sidebar />
+                    <>
+                        <Sidebar />
+                    </>
+
 
 
 
                     {/* center main grid */}
-                    <main className='bg-green-40 col-span-8 flex flex-col relative'>
 
-                        <Outlet />
 
-                        {/* footer */}
-                        <Footer className={'bg-white'} />
-                    </main>
+                    {/* <Outlet /> */}
+                    <Outlet />
+                    {/* footer */}
+
 
 
                     {/* right side */}
 
-                    <div className='col-span-2 bg-pink-400 sticky top-16 h-[calc(100vh-64px)] '>
-                        second div
-                    </div>
 
+
+                    {/* ######################################################################################################################################################################## */}
 
 
                 </div>
-                <><Toaster richColors={true} position="top-right" /></>
+                <Toaster position="top-right" richColors/>
+                {/* <><Toaster richColors={true} position="top-right" /></> */}
             </div>
 
 
