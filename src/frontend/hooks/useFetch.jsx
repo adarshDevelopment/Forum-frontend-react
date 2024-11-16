@@ -9,6 +9,8 @@ const useFetch = ({ url, fetchTrigger = null }) => {
     const [isSuccess, setIsSuccess] = useState(false);
 
     useEffect(() => {
+
+        
         // console.log('inside use effect of useFetch hooks inside hooks folder');
         // using try catch
 

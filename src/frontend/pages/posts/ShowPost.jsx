@@ -11,6 +11,7 @@ import getPostData from '../../../helperFunctions/getPostData';
 
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
+import CommentSection from './CommentSection';
 
 function ShowPost() {
 
@@ -19,9 +20,6 @@ function ShowPost() {
 
     const [fetchTrigger, setFetchtrigger] = useState(false);
     const { data, loading, errors, isSuccess } = useFetch({ url: `post/${slug}`, fetchTrigger: fetchTrigger });
-
-    useEffect(() => {
-    }, [fetchTrigger])
 
 
 
@@ -47,8 +45,6 @@ function ShowPost() {
     // post submission:
     const [comment, setComment] = useState('');
     const [commenLoading, setCommentLoading] = useState(false);
-
-
     const handleSubmitForm = async () => {
         setCommentLoading(true);
 
@@ -159,7 +155,7 @@ function ShowPost() {
 
                         </div>
 
-                        {/* Comment section */}
+                        {/* Comment text field */}
                         <div className=' w-full flex flex-col'>
 
                             {
@@ -213,74 +209,7 @@ function ShowPost() {
 
                     {/* comment section */}
 
-                    <div className='bg-blue-40 flex flex-col px-5 max-w-[755px] ml-28 py-6 flex-grow gap-4'>
-
-                        {comments.map(comment =>
-                            <div key={comment.id} className='bg-purple-40 flex bg-gray-50 rounded-xl p-2'>
-                                {/* profile picture */}
-                                <div className='flex items-start gap-2 h-fit rounded-full'>
-                                    <div className='h-[50px] w-[50px]'>
-                                        <img
-                                            className='w-full h-full object-cover rounded-full'
-                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLSzT6HpzeJ8HQ3Y_TT5FoFCrfBRwGvtqLoA&s" alt="" />
-                                    </div>
-                                </div>
-
-                                {/* username, comment and Like/Disklike buttons */}
-                                {
-                                    comment.user ?
-                                        <div className='bg-orange-40 px-3 flex flex-col'>
-                                            <div className='flex items-center'>
-                                                <span>u/{comment.user.name}</span>
-                                                <span className='text-sm text-gray-500'> - 11 hours ago</span>
-                                            </div>
-                                            <span> {comment.comment}</span>
-
-                                            {/*  like and diskle*/}
-                                            <div className='flex items-center gap-3 text-xl'>
-
-                                                {/* like and disklike */}
-                                                <div className='flex gap-2 items-center'>
-                                                    <button className='hover:text-indigo-600'>
-                                                        <BiLike />
-                                                    </button>
-
-                                                    <span className='text-sm font-semibold text-gray-600'>
-                                                        42
-                                                    </span>
-
-                                                    <button className='hover:text-orange-500'>
-                                                        <BiDislike />
-                                                    </button>
-                                                </div>
-                                                {/* end of like and dislike */}
-
-
-                                                <div className='flex gap-1 items-center px-2 py-2 rounded-full cursor-pointer hover:bg-custom-gray-orange'>
-                                                    <BiMessageRounded />
-                                                    <span className='text-sm text-gray-600 font-semibold'>Reply</span>
-                                                </div>
-
-                                            </div>
-
-
-
-                                        </div>
-                                        : <></>
-                                }
-
-
-
-                            </div>
-
-                        )}
-
-                        {/* single comment */}
-
-
-
-
-                    </div>
+                    <CommentSection comments={comments} />
 
 
 

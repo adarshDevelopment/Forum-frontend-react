@@ -6,7 +6,8 @@ const initialState = {
     showLogin: false,
     showNotificationDropdown: false,
     showProfileDropdown: false,
-    showDarkMode: false
+    showDarkMode: false,
+
 }
 
 const toggeleSlice = createSlice({
@@ -52,9 +53,14 @@ const toggeleSlice = createSlice({
 
         toggleDarkMode: state => {
             state.showDarkMode = !state.showDarkMode;
-        }
+        },
     }
 })
 
-export const { toggleRegisterModal, toggleLoginModal, toggleNotificationDropdown, toggleProfileDropdown, toggleDarkMode } = toggeleSlice.actions;
+export const { toggleRegisterModal,
+    toggleLoginModal,
+    toggleNotificationDropdown,
+    toggleProfileDropdown,
+    toggleDarkMode
+} = toggeleSlice.actions;
 export default toggeleSlice.reducer;

@@ -16,6 +16,7 @@ import Sidebar from './pages/components/Sidebar';
 import Footer from './pages/components/Footer';
 import Login from './pages/components/Login';
 import SignUp from './pages/components/SignUp';
+import DeleteCommentModal from './pages/components/modals/DeleteCommentModal';
 
 
 
@@ -54,7 +55,7 @@ function Home() {
                 <Login />
                 <SignUp />
 
-
+                <DeleteCommentModal />
                 <Header />
 
 
@@ -98,7 +99,7 @@ function Home() {
 
 
                 </div>
-                <Toaster position="top-right" richColors/>
+                <Toaster position="top-right" richColors />
                 {/* <><Toaster richColors={true} position="top-right" /></> */}
             </div>
 

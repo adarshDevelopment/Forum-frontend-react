@@ -7,6 +7,8 @@ Directory/Folder structure
 fetchUser createAssyncThunk is called from Header.jsx to fetch user and also from several other places 
 
 
+2. post details: 
+    
 
 
 1. Application features:
