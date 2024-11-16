@@ -7,7 +7,7 @@ const getPostData = async ({ url, formData }) => {
     const token = localStorage.getItem('token');
 
     // send post data with token 
-    console.log('formData: ', formData);
+    // console.log('formData: ', formData);
     try {
         data = await axios.post(`http://127.0.0.1:8000/api/${url}`,
             formData

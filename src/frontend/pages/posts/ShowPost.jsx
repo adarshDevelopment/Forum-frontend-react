@@ -13,15 +13,28 @@ import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import CommentSection from './CommentSection';
 
+import { useDispatch } from 'react-redux';
+import { setFetchCommentTrigger } from '../../../store/features/deleteModalSlice/deleteModalSlice';
+import { TiEdit } from "react-icons/ti";
+
+import getPutData from '../../../helperFunctions/getPutData';
+
+
 function ShowPost() {
 
     // useFetch to fetch post and comments
     const { slug } = useParams();
+    const fetchCommentTrigger = useSelector(state => state.deleteModalSlice.fetchCommentTrigger)
+    const dispatch = useDispatch();
+    const { data, loading, errors, isSuccess } = useFetch({ url: `post/${slug}`, fetchTrigger: fetchCommentTrigger })
 
-    const [fetchTrigger, setFetchtrigger] = useState(false);
-    const { data, loading, errors, isSuccess } = useFetch({ url: `post/${slug}`, fetchTrigger: fetchTrigger });
+    const loggedInUser = useSelector(state => state.auth.user.user);
 
+    //  using state fetchCommentTrigger to refrehs comment section if user creates or deletes a comment
+    const comments = useFetch({ url: `comment/${slug}`, fetchTrigger: fetchCommentTrigger });
+    const commentList = comments.data?.comments;
 
+    // ###########################################################################
 
     // comment text area/input toggle
     const [showTextField, setShowTextField] = useState(false);
@@ -34,7 +47,7 @@ function ShowPost() {
         }
     }, [showTextField])
 
-    const handleInput = () => {
+    const handleInput = (e) => {
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
             textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
@@ -51,20 +64,62 @@ function ShowPost() {
         // const { data, isSuccess, errors }
         const commentData = await getPostData({ url: 'comment', formData: { comment, slug } });
         setCommentLoading(false);
-        console.log('comment data: ', commentData);
+        // console.log('comment data: ', commentData);
 
         if (commentData.isSuccess) {
             toast.success('Comment successfuly posted');
             textareaRef.current.blur();
             setComment('');
-            setFetchtrigger(state => !state);
+
+            // udpate fetchtrigger to update the commetns
+            dispatch(setFetchCommentTrigger());
         }
         if (commentData.errors) {
             toast.error('Error posting comment');
         }
     }
+    // End of post submission
 
 
+    // Edit post
+    const [isEdit, setIsEdit] = useState(false);
+    const [postContent, setPostContent] = useState('');
+    const postTextAreaRef = useRef();
+    const handlePostInput = (e) => {        // to expand textarea length as the user types more content
+        if (postTextAreaRef.current) {
+            postTextAreaRef.current.style.height = 'auto';
+            postTextAreaRef.current.style.height = `${postTextAreaRef.current.scrollHeight}px`
+        }
+    }
+
+    useEffect(() => {
+        // console.log('data inside useEffect: ', data?.post.post.content);
+        setPostContent(data?.post.post.content);
+    }, [data])
+
+    //  update submission
+    const [postUpdateLoading, setPostUpdateeLoading] = useState(false);
+    const handleUpdateForm = async () => {
+        setPostUpdateeLoading(true);
+        const { isSuccess, errors } = await getPutData({ url: `post`, slug, formDadta: { slug, content: postContent } });
+        setPostUpdateeLoading(false);
+
+        console.log('isScuccess: ', isSuccess);
+        if (errors && !isSuccess) {
+            console.log('test again')
+            toast.error('Error updating post');
+        }
+        if (isSuccess) {
+            console.log('in here');
+            toast.success('Post successfully updated');
+            setIsEdit(false);
+            dispatch(setFetchCommentTrigger());     //
+        }
+
+
+    }
+
+    // end of edit post
 
     // return component part
     if (!loading && isSuccess && data.post) {
@@ -72,7 +127,7 @@ function ShowPost() {
         const post = data.post.post;
         const user = data.post.user;
         const tag = data.post.tag;
-        const comments = data.post.comments;
+        // const comments = data.post.comments;
 
         return (
             <>
@@ -94,8 +149,10 @@ function ShowPost() {
                         </div>
 
                         {/* title */}
-                        <div className='text-2xl font-semibold mb-3 mt-2'>
-                            {post.title}
+                        <div className=' mb-3 mt-2 bg-red-40 flex justify-between items-start'>
+                            <span className='text-2xl font-semibold'>
+                                {post.title}
+                            </span>
                         </div>
 
 
@@ -110,9 +167,52 @@ function ShowPost() {
 
 
                         {/* content */}
-                        <div className='mt-2'>
-                            {post.content}
-                        </div>
+                        {/* Also edit here */}
+
+                        {
+                            isEdit
+
+                                ? (
+                                    < div className='relative flex flex-col border border-gray-500 rounded-2xl' >
+                                        <textarea
+                                            required
+                                            onInput={handlePostInput}
+                                            value={postContent}
+                                            onChange={e => setPostContent(e.target.value)}
+                                            ref={textareaRef}
+                                            className=' w-full min-h-[100px] focus:outline-none px-3 py-3 border-0 rounded-2xl'
+                                            name="" id="" placeholder=''
+                                        >
+                                        </textarea>
+
+
+                                        <div className=' right-3 bottom-3 flex justify-end p-2 gap-2'>
+                                            <button
+                                                onClick={() => { setIsEdit(false); }}
+                                                className='bg-custom-gray-orange px-3 py-2 rounded-full font-semibold hover:bg-custom-gray-dark'
+                                            >
+                                                Cancel
+                                            </button>
+
+                                            <button
+                                                onClick={handleUpdateForm}
+                                                disabled={postUpdateLoading || !postContent}
+                                                className={`bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-full font-semibold ${commenLoading ? 'bg-indigo-700' : ''}`}
+                                            >
+                                                Submit
+                                            </button>
+                                        </div>
+                                    </div >
+
+
+
+                                )
+                                : <div className='mt-2'>
+
+                                    {post.content}
+                                </div>
+                        }
+
 
 
                         {/* Like and comments numbers */}
@@ -153,6 +253,25 @@ function ShowPost() {
 
                             </div>
 
+
+                            {
+                                // weather or not to show the edit button
+                                loggedInUser ?
+                                    loggedInUser.id == user.id
+                                        ? <div
+                                            onClick={() => { setIsEdit(true); }}
+                                            className='bg-custom-gray-orange px-4 py-2 rounded-full gap-3 flex items-center hover:bg-custom-gray-dark cursor-pointer'>
+                                            <button
+                                                className='text-2xl font-bold text-gray-700 p- hover:bg-custom-gray-orange rounded-xl '>
+                                                <TiEdit />
+                                            </button>
+
+                                        </div>
+                                        : <></>
+                                    : <></>
+                            }
+
+
                         </div>
 
                         {/* Comment text field */}
@@ -164,6 +283,7 @@ function ShowPost() {
 
 
                                         <textarea
+                                            required
                                             onInput={handleInput}
                                             value={comment}
                                             onChange={e => setComment(e.target.value)}
@@ -184,7 +304,7 @@ function ShowPost() {
 
                                             <button
                                                 onClick={handleSubmitForm}
-                                                disabled={commenLoading}
+                                                disabled={commenLoading || !comment}
                                                 className={`bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-full font-semibold ${commenLoading ? 'bg-indigo-700' : ''}`}
                                             >
                                                 Submit
@@ -209,10 +329,14 @@ function ShowPost() {
 
                     {/* comment section */}
 
-                    <CommentSection comments={comments} />
-
-
-
+                    {
+                        !comments.loading && comments.isSuccess
+                            ?
+                            commentList
+                                ? <CommentSection comments={commentList} />
+                                : <></>
+                            : <></>
+                    }
 
 
                     <Footer className={'bg-white'} />

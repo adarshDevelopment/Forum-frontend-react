@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 
 import { toggleDeleteModal, setDeleteId } from '../../../../store/features/deleteModalSlice/deleteModalSlice';
 import getDeleteData from '../../../../helperFunctions/getDeleteData';
-
+import { setFetchCommentTrigger } from '../../../../store/features/deleteModalSlice/deleteModalSlice';
 
 export default function DeleteCommentModal() {
 
@@ -31,8 +31,9 @@ export default function DeleteCommentModal() {
         setLoading(false);
 
 
-        console.log('isDeletesuccess: ', isDeleteSuccess);
+        // console.log('isDeletesuccess: ', isDeleteSuccess);
         if (isDeleteSuccess) {
+            dispatch(setFetchCommentTrigger())
             toast.success('Comment successfully deleted');
         } else {
             toast.error('Error deleting comment')

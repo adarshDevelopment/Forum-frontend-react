@@ -3,8 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     deleteComment: {
         showDeleteModal: false,
-        commentId: null
-    }
+        commentId: null,
+    },
+
+    fetchCommentTrigger: false
+
 }
 
 const deleteModalSlice = createSlice({
@@ -26,11 +29,17 @@ const deleteModalSlice = createSlice({
                 return;
             }
             state.deleteComment.commentId = action.payload;
+        },
+        setFetchCommentTrigger: state => {
+            state.fetchCommentTrigger = !state.fetchCommentTrigger;
+            console.log('trigger changed: ', state.fetchCommentTrigger);
         }
-    }
+
+    },
+
 
 })
 
 export default deleteModalSlice.reducer;
 
-export const { toggleDeleteModal, setDeleteId } = deleteModalSlice.actions;
+export const { toggleDeleteModal, setDeleteId, setFetchCommentTrigger } = deleteModalSlice.actions;
