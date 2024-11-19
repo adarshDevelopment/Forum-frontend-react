@@ -46,7 +46,9 @@ function ShowPost() {
 
     //  using state fetchCommentTrigger to refrehs comment section if user creates or deletes a comment
     const comments = useFetch({ url: `comment/${slug}`, fetchTrigger: fetchCommentTrigger });
-    const commentList = comments.data?.comments;
+
+    const commentList = comments.data;
+
 
     // ###########################################################################
 
@@ -84,7 +86,7 @@ function ShowPost() {
             toast.success('Comment successfuly posted');
             textareaRef.current.blur();
             setComment('');
-
+            setCommentNumber(comments.data?.comments.length);
             // udpate fetchtrigger to update the commetns
             dispatch(toggleFetchCommentTrigger());
         }
@@ -106,7 +108,7 @@ function ShowPost() {
         }
     }
 
-    useEffect(() => {
+    useEffect(() => {       // set the post content 
         // console.log('data inside useEffect: ', data?.post.post.content);
         setPostContent(data?.post?.post.content);
     }, [data])
@@ -130,10 +132,21 @@ function ShowPost() {
 
 
     }
+    // console.log('useEffect data: ', data);
 
+    const [commentNumber, setCommentNumber] = useState(0);
 
+    useEffect(() => {
+        // console.log('useEffect data: ', data?.post.comments.length);
+        setCommentNumber(data?.post.comments.length)
+        // setCommentNumber()
+    }, [data?.post?.comments])
 
     // end of edit post
+
+
+
+
 
     // return component part
     if (!loading && isSuccess && data?.post) {
@@ -144,7 +157,7 @@ function ShowPost() {
         // const comments = data.post.comments;
 
 
-        console.log('comment: ', data.post.comments.length);
+        // console.log('comment: ', data.post.comments.length);
         return (
             <>
                 {/* center main grid */}
@@ -248,7 +261,8 @@ function ShowPost() {
                                         <BiMessageSquare className='text-2xl' />
                                     </button>
 
-                                    <span>{data.post?.comments.length}</span>
+                                    {/* <span>{data.post?.comments.length}</span> */}
+                                    <span>{commentNumber}</span>
                                 </div>
                             </div>
 

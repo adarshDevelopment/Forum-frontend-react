@@ -12,7 +12,7 @@ import { toggleFetchCommentTrigger } from '../../../store/features/deleteModalSl
 
 
 function CommentSection({ comments }) {
-
+ console.log('inside commentSection');
     // comment delte stuff
     const user = useSelector(state => state.auth.user.user);        // for matching post_id and logged in user's id
     const dispatch = useDispatch();
@@ -80,6 +80,7 @@ function CommentSection({ comments }) {
 
                     {/* username, comment and Like/Disklike buttons || second col*/}
                     <div className='bg-orange-40 px-3 flex flex-col bg-red-40 w-full '>
+                        hello world
                         {
 
                             showEditComment && comment.id == editCommnetId
