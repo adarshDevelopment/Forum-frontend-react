@@ -8,6 +8,7 @@ import { fetchUser } from '../../../../store/features/authSlice/authSlice';
 import ProfileMenu from './ProfileMenu';
 import LoginButtons from './LoginButtons';
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Header() {
 
@@ -18,6 +19,8 @@ function Header() {
 
     const user = useSelector(state => state.auth.user);
 
+    // const textField = 
+
     // end of header functions
     return (
         <header className='flex-grow-0 flex shrink-0 overflow-hidden h-16 top-0 w-full left-0 border-b bg-white  z-10 fixed justify-between'>
@@ -25,8 +28,11 @@ function Header() {
             <nav className='h-full flex justify-between items-center border-gray-300 w-full px-4'>
 
                 {/* BlogThread logo  */}
-                <div className="flex-shrink-0 flex-grow">
-                    BlogThread
+                <div className="flex-shrink-0 flex-grow ">
+                    <Link to={'/'} className="p-2 rounded-lg hover:bg-custom-gray-orange text-gray-600 font-bold">
+                        BlogThread
+                    </Link>
+
                 </div>
 
                 {/* Center search bar */}

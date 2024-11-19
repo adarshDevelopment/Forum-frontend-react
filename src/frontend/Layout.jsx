@@ -24,6 +24,7 @@ import DeleteCommentModal from './pages/components/modals/DeleteCommentModal';
 import { Outlet } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import CreatePost from './pages/posts/CreatePost';
+import DeletePostModal from './pages/components/modals/DeletePostModal';
 
 
 
@@ -56,6 +57,7 @@ function Home() {
                 <SignUp />
 
                 <DeleteCommentModal />
+                <DeletePostModal />
                 <Header />
 
 

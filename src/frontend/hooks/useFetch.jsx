@@ -8,34 +8,42 @@ const useFetch = ({ url, fetchTrigger = null }) => {
     const [errors, setErrors] = useState(null);
     const token = localStorage.getItem('token');
     const [isSuccess, setIsSuccess] = useState(false);
-    
+
     useEffect(() => {
 
 
+        const fetchData = async () => {
+            // not using try catch
 
-        // not using try catch
+            // resetting loading whenever dependencies change
+            setLoading(true);
+            setErrors(null);
 
-        // resetting loading whenever dependencies change
-        setLoading(true);
-        setErrors(null);
-
-        axios.get(`http://127.0.0.1:8000/api/${url}`, {
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        })
-            .then((response) => {
+            try {
+                const response = await
+                    axios.get(`http://127.0.0.1:8000/api/${url}`, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
                 setData(response.data);
                 setIsSuccess(true);
-            }).catch((error) => {
-                setErrors(error);
+            } catch (e) {
+                console.log('exception useFetch: ', e.response);
+                if (e.response) {
+                    setErrors(e.response);
+                } else {
+                    setErrors('Client side error')
+                }
                 setIsSuccess(false);
-            }).finally(() => {
+
+            } finally {
                 setLoading(false);
-            })
+            }
+        }
 
-
+        fetchData();
     }, [url, fetchTrigger])
 
     return { data, loading, errors, isSuccess };

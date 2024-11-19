@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 
 import { CgProfile } from "react-icons/cg";
 import { BiDislike, BiLike, BiMessageSquare, BiShareAlt, BiMessageRounded } from "react-icons/bi";
+import { FaRegTrashCan } from "react-icons/fa6";
 import { Link } from 'react-router-dom';
 
 import getPostData from '../../../helperFunctions/getPostData';
@@ -14,19 +15,32 @@ import { toast } from 'sonner';
 import CommentSection from './CommentSection';
 
 import { useDispatch } from 'react-redux';
-import { setFetchCommentTrigger } from '../../../store/features/deleteModalSlice/deleteModalSlice';
+// change the fetchValue to change the dependency on useFetch post's useEffect
+import { setCommentId, toggleDeletePostModal, toggleDeleteCommentModal, toggleFetchCommentTrigger, toggleFetchPostTrigger, setPostId } from '../../../store/features/deleteModalSlice/deleteModalSlice';
 import { TiEdit } from "react-icons/ti";
 
 import getPutData from '../../../helperFunctions/getPutData';
 
+import { useNavigate } from 'react-router-dom';
+import PostUpvote from '../components/upvote/PostUpvote';
+
 
 function ShowPost() {
-
+    const navigate = useNavigate();
     // useFetch to fetch post and comments
     const { slug } = useParams();
     const fetchCommentTrigger = useSelector(state => state.deleteModalSlice.fetchCommentTrigger)
+    const fetchPostTrigger = useSelector(state => state.deleteModalSlice.fetchPostTrigger)
     const dispatch = useDispatch();
-    const { data, loading, errors, isSuccess } = useFetch({ url: `post/${slug}`, fetchTrigger: fetchCommentTrigger })
+    const { data, loading, errors, isSuccess } = useFetch({ url: `post/${slug}`, fetchTrigger: fetchPostTrigger })
+    // console.log('top data: ', data);
+
+    if (errors?.status == 404) {
+        toast.error('Post not found');
+        navigate('/')
+    }
+    // if 404 error?
+    // if(errors.)
 
     const loggedInUser = useSelector(state => state.auth.user.user);
 
@@ -72,7 +86,7 @@ function ShowPost() {
             setComment('');
 
             // udpate fetchtrigger to update the commetns
-            dispatch(setFetchCommentTrigger());
+            dispatch(toggleFetchCommentTrigger());
         }
         if (commentData.errors) {
             toast.error('Error posting comment');
@@ -94,7 +108,7 @@ function ShowPost() {
 
     useEffect(() => {
         // console.log('data inside useEffect: ', data?.post.post.content);
-        setPostContent(data?.post.post.content);
+        setPostContent(data?.post?.post.content);
     }, [data])
 
     //  update submission
@@ -106,35 +120,38 @@ function ShowPost() {
 
         console.log('isScuccess: ', isSuccess);
         if (errors && !isSuccess) {
-            console.log('test again')
             toast.error('Error updating post');
         }
         if (isSuccess) {
-            console.log('in here');
             toast.success('Post successfully updated');
             setIsEdit(false);
-            dispatch(setFetchCommentTrigger());     //
+            dispatch(toggleFetchPostTrigger());
         }
 
 
     }
 
+
+
     // end of edit post
 
     // return component part
-    if (!loading && isSuccess && data.post) {
+    if (!loading && isSuccess && data?.post) {
 
         const post = data.post.post;
         const user = data.post.user;
         const tag = data.post.tag;
         // const comments = data.post.comments;
 
+
+        console.log('comment: ', data.post.comments.length);
         return (
             <>
                 {/* center main grid */}
                 <main className='bg-green-40 col-span-8 flex flex-col relative p-5'>
 
                     {/* post section */}
+
 
                     <div className='bg-green-40 flex flex-col relative bg-yellow-40 px-5 max-w-[755px] ml-28 py-6'>
 
@@ -173,7 +190,7 @@ function ShowPost() {
                             isEdit
 
                                 ? (
-                                    < div className='relative flex flex-col border border-gray-500 rounded-2xl' >
+                                    <div className='relative flex flex-col border border-gray-500 rounded-2xl' >
                                         <textarea
                                             required
                                             onInput={handlePostInput}
@@ -219,18 +236,8 @@ function ShowPost() {
                         <div className='bg-red-40 w-full flex bg-red-40 mt-6 gap-4 text-gray-600 mb-6'>
 
                             {/* likes */}
-                            <div className='bg-custom-gray-orange px-4 py-2 rounded-full gap-3 flex items-center '>
-                                <button className='text-gray-600 hover:text-indigo-600'>
-                                    <BiLike className='text-2xl' />
-                                </button>
 
-                                <span className='font-semibold'>5</span>
-
-
-                                <button className='text-2xl text-gray-600 hover:text-orange-600'>
-                                    <BiDislike />
-                                </button>
-                            </div>
+                            <PostUpvote slug={slug} />
 
                             {/* comments */}
 
@@ -241,7 +248,7 @@ function ShowPost() {
                                         <BiMessageSquare className='text-2xl' />
                                     </button>
 
-                                    <span>10</span>
+                                    <span>{data.post?.comments.length}</span>
                                 </div>
                             </div>
 
@@ -254,19 +261,35 @@ function ShowPost() {
                             </div>
 
 
+
                             {
                                 // weather or not to show the edit button
                                 loggedInUser ?
                                     loggedInUser.id == user.id
-                                        ? <div
-                                            onClick={() => { setIsEdit(true); }}
-                                            className='bg-custom-gray-orange px-4 py-2 rounded-full gap-3 flex items-center hover:bg-custom-gray-dark cursor-pointer'>
-                                            <button
-                                                className='text-2xl font-bold text-gray-700 p- hover:bg-custom-gray-orange rounded-xl '>
-                                                <TiEdit />
-                                            </button>
+                                        ?
+                                        <>
+                                            <div
+                                                onClick={() => { setIsEdit(true); setShowTextField(false) }}
+                                                className='bg-custom-gray-orange px-4 py-2 rounded-full gap-3 flex items-center hover:bg-custom-gray-dark cursor-pointer'>
+                                                <button
+                                                    className='text-2xl font-bold text-gray-700 p- hover:bg-custom-gray-orange rounded-xl '>
+                                                    <TiEdit />
+                                                </button>
 
-                                        </div>
+                                            </div>
+
+
+                                            <div
+                                                onClick={() => { dispatch(setPostId(post.id)); dispatch(toggleDeletePostModal()) }}
+                                                className='bg-custom-gray-orange px-4 py-2 rounded-full gap-3 flex items-center hover:bg-custom-gray-dark cursor-pointer'>
+                                                <button
+                                                    className='text-xl font-bold text-gray-700 p- hover:bg-custom-gray-orange rounded-xl '>
+                                                    <FaRegTrashCan />
+                                                </button>
+
+                                            </div>
+                                        </>
+
                                         : <></>
                                     : <></>
                             }
@@ -326,6 +349,9 @@ function ShowPost() {
                         </div>
 
                     </div>
+
+
+
 
                     {/* comment section */}
 

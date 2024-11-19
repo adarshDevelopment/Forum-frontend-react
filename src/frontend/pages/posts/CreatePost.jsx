@@ -61,20 +61,17 @@ function CreatePost() {
 
     }
 
-    
+
 
 
     const { data, loading } = useFetch({ url: 'tag' })
-
 
 
     // UI element
     const [titleFocus, setTitleFocus] = useState(false);
     // end of UI element
 
-
     const tags = data?.tags;
-    // console.log('tags: ', tags)
 
 
     // clear the post after submitting and redirect the use to the created post

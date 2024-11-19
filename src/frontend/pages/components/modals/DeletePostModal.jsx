@@ -1,46 +1,45 @@
-import React, { useState } from 'react'
-import { RxCrossCircled } from "react-icons/rx";
-import { useSelector } from 'react-redux';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { toast } from 'sonner';
-
-
-import { toggleDeleteCommentModal, setCommentId } from '../../../../store/features/deleteModalSlice/deleteModalSlice';
+import { useSelector } from 'react-redux';
+import { RxCrossCircled } from "react-icons/rx";
+import { useNavigate } from 'react-router-dom';
+import { toggleDeletePostModal, setPostId } from '../../../../store/features/deleteModalSlice/deleteModalSlice';
 import getDeleteData from '../../../../helperFunctions/getDeleteData';
-import { toggleFetchCommentTrigger } from '../../../../store/features/deleteModalSlice/deleteModalSlice';
+import toast from 'react-hot-toast';
 
-export default function DeleteCommentModal() {
+export default function DeletePostModal() {
 
-
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     // const showDelete = useSelector(state => state.toggleSlice.showDeleteModal);
-    const deleteModalSlice = useSelector(state => state.deleteModalSlice.deleteComment);       // contains: showDeleteModal and comment
+    const deleteModalSlice = useSelector(state => state.deleteModalSlice.deletePost);       // contains: showDeletePostModal and postId
 
 
     const closeModal = () => {
-        dispatch(setCommentId(null));           // setting id as null
-        dispatch(toggleDeleteCommentModal(false));      // closes the modal
+        dispatch(setPostId(null));
+        dispatch(toggleDeletePostModal(false));
     }
 
     const [loading, setLoading] = useState(false);
 
     const handleDelete = async () => {
+
         setLoading(true);
-        const { isDeleteSuccess, deleteErrors } = await getDeleteData({ url: 'comment', id: deleteModalSlice.commentId })
+        const { isDeleteSuccess, deleteErrors } = await getDeleteData({ url: 'post', id: deleteModalSlice.postId })
         setLoading(false);
 
 
         // console.log('isDeletesuccess: ', isDeleteSuccess);
         if (isDeleteSuccess) {
-            dispatch(toggleFetchCommentTrigger())       // change value of dependency to re-render comemtns
+            // navigate('/');      // navigate to home page
             toast.success('Comment successfully deleted');
         } else {
             toast.error('Error deleting comment')
         }
-        dispatch(toggleDeleteCommentModal(false));
+        // dispatch(toggleDeletePostModal(false));
 
     }
-    if (deleteModalSlice.showDeleteModal) {
+    if (deleteModalSlice.showDeletePostModal) {
         return (
             <div className='bg-gray-400 bg-opacity-50 h-screen w-screen z-50 top-0 fixed flex justify-center items-center'>
 
@@ -56,7 +55,7 @@ export default function DeleteCommentModal() {
                             </button>
                         </div>
 
-                        <div className='text-gray-500 mt-3'>Are you sure you want to delete this comment?</div>
+                        <div className='text-gray-500 mt-3'>Are you sure you want to delete this post?</div>
 
                     </div>
                     <div className='flex justify-end items-center gap-4 mt-5'>
@@ -77,9 +76,6 @@ export default function DeleteCommentModal() {
             </div>
         )
     }
-
-
-
 }
 
-// export default DeleteCommentModal
+
