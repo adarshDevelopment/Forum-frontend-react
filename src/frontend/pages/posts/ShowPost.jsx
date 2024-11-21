@@ -46,9 +46,7 @@ function ShowPost() {
 
     //  using state fetchCommentTrigger to refrehs comment section if user creates or deletes a comment
     const comments = useFetch({ url: `comment/${slug}`, fetchTrigger: fetchCommentTrigger });
-
-    const commentList = comments.data;
-
+    const commentList = comments.data?.comments;
 
     // ###########################################################################
 

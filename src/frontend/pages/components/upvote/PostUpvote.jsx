@@ -25,14 +25,13 @@ function PostUpvote({ slug, }) {
         // upvoting/downvoting posts
         const upvote = await getPostData({ url: 'post/upvote', formData: { slug, user: user.id, upvoteStatus: vote } });
         // 
-        const upvoteData = await getGetData({ url: `upvotes/${slug}` });        // fetching total upvotes post 
+        const upvoteData = await getGetData({ url: `post/upvotes/${slug}` });        // fetching total upvotes post 
         if (!upvoteData.errors) {
             setPost(upvoteData.data.post.post)
             setStatusValue(upvoteData.data.post.status?.upvote_status);
         }
 
-
-
+        
         setLoading(false);
     }
 
@@ -50,7 +49,7 @@ function PostUpvote({ slug, }) {
 
         const getUpvotes = async () => {
             setLoading(true);
-            const upvoteData = await getGetData({ url: `upvotes/${slug}` });
+            const upvoteData = await getGetData({ url: `post/upvotes/${slug}` });
             // console.log('posts: ', upvoteData);
             if (!upvoteData.errors) {
                 setPost(upvoteData.data.post.post)      // for upvote numbers
