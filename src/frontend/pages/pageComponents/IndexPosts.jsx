@@ -1,14 +1,16 @@
 import React from 'react'
 import useFetch from '../../hooks/useFetch';
-import { MdOutlineTravelExplore, MdOutlineAddchart, MdOutlineThumbUpAlt, MdOutlineThumbDown } from "react-icons/md";
+import { MdOutlineThumbUpAlt, MdOutlineThumbDown } from "react-icons/md";
 import { Link } from 'react-router-dom';
 
 function IndexPosts() {
 
 
     // fetchPosts('http://127.0.0.1:8000/api/posts');
-    const { data, loading, errors } = useFetch({ url: 'posts' });
 
+    
+    const { data, loading, errors } = useFetch({ url: 'posts' });
+    console.log('index post: ', data);
     // if (loading) {
     //     return <>Loading...</>
     // }
@@ -48,8 +50,6 @@ function IndexPosts() {
 
                                             </div>
 
-
-
                                             {/* right parrt text */}
                                             <div className='flex flex-col justify-between bg-red-40 text-start px-2 w-full flex-grow overflow-hidden bg-red-40'>
 
@@ -58,7 +58,8 @@ function IndexPosts() {
                                                 {/* sub name and time */}
                                                 <div className='bg-orange-40 flex w-fit gap-2 items-center'>
                                                     <div className='flex gap-1 items-center'>
-                                                        <span className='text-gray-600 text-sm'>r/SubName</span>
+                                                        {/* <span className='text-gray-600 text-sm'>r/SubName</span> */}
+                                                        <span className='text-gray-600 text-sm'>{post.user.name}</span>
                                                         <span className='text-gray-400 text-xs'>. 1 hr ago</span>
                                                     </div>
 
@@ -79,14 +80,14 @@ function IndexPosts() {
                                                         <span className='text-indigo-600'>
                                                             <MdOutlineThumbUpAlt className='text-lg' />
                                                         </span>
-                                                        <span>{post.likes}</span>
+                                                        <span>{post.gross_votes}</span>
                                                         <span className='text-red-600'><MdOutlineThumbDown className='text-lg' /></span>
                                                     </div>
 
 
                                                     {/* Comments */}
                                                     <div className='hover:bg-custom-gray-dark flex gap-1 items-center rounded-full px-4 py-1 text-sm'>
-                                                        <span>14</span>
+                                                        <span>{post.comments.length}</span>
                                                         <span>Comments</span>
                                                     </div>
 
