@@ -1,41 +1,55 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import useFetch from '../../hooks/useFetch';
 import { MdOutlineThumbUpAlt, MdOutlineThumbDown } from "react-icons/md";
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import getPostData from '../../../helperFunctions/getPostData';
 
 function IndexPosts() {
 
 
-    // fetchPosts('http://127.0.0.1:8000/api/posts');
 
-    
+    const user = useSelector(state => state.auth.user.user);
+
     const { data, loading, errors } = useFetch({ url: 'posts' });
-    console.log('index post: ', data);
-    // if (loading) {
-    //     return <>Loading...</>
-    // }
 
-    if (errors) {
-        console.log(errors);
+
+
+
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        setPosts(data?.posts);
+    }, [data])
+
+
+    const handleUpvotePost = async (postSlug, upvoteStatus) => {
+        const data = await getPostData({ url: 'post/upvote', formData: { user: user.id, slug: postSlug, upvoteStatus } })
+
+        // console.log('data: ', data.data.updatedPost);       // updatedPost.data: id, slug, gross_votes
+        if (!data.errors) {
+            setPosts(prevState => prevState.map(post => {
+                if (post.slug == postSlug) {
+                    return { ...post, gross_votes: data.data.updatedPost.gross_votes, post_like: data.data.updatedPost.post_like };
+                }
+                return post;
+            }
+
+            ));
+        }
     }
 
+    if (posts && posts.length > 0) {
+        return (
+            <>
+                <main className='bg-green-40 col-span-8 flex flex-col relative'>
 
-    return (
+                    <center className='flex-grow flex-shrink-0 p-5 bg-red-40'>
 
-        <>
-            <main className='bg-green-40 col-span-8 flex flex-col relative'>
+                        {
+                            posts.map((post) =>
 
-                <center className='flex-grow flex-shrink-0 p-5 bg-red-40'>
-
-                    {
-
-
-
-                        data ?
-                            // <>hello</>
-
-                            data.posts.map((post) =>
-
+                                // 
                                 <Link to={`/post/${post.slug}`} key={post.id} className="bg-gray-40 flex flex-col bg-orange-40 border-t ">
 
                                     <div className='bg-green-40 border-b'>
@@ -45,7 +59,7 @@ function IndexPosts() {
                                             {/* left part image */}
                                             <div className='items-center flex'>
                                                 <div className='  h-[96px] bg-indigo-40 rounded-md  bg-red-40'>
-                                                    <img className='h-full w-full object-cover rounded-md' src="https://people.com/thmb/d72gkdnwShOp-jxpT3mCjdhu2xA=/400x262/filters:no_upscale():max_bytes(150000):strip_icc()/Kanye-West-is-seen-inlos-angeles-071024-d34d1b20208b429c8724057d9ab0ec85.jpg" alt="" />
+                                                    <img className='h-full w-full object-cover rounded-md' src="https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=" alt="" />
                                                 </div>
 
                                             </div>
@@ -76,12 +90,44 @@ function IndexPosts() {
                                                 <div className='flex gap-1 flex-shrink-0 flex-grow-0 bg-orange-40'>
 
                                                     {/* upvote/downvote */}
-                                                    <div className='bg-custom-gray-dark px-3 py-1 rounded-full gap-3 flex items-center '>
-                                                        <span className='text-indigo-600'>
+                                                    <div
+                                                        onClick={e => e.preventDefault()}
+                                                        className='bg-custom-gray-dark px-3 py-1 rounded-full gap-3 flex items-center '>
+                                                        <button
+
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                // e.stopPropagation();
+                                                                handleUpvotePost(post.slug, true)
+                                                            }}
+                                                            className={` 
+                                                                ${user && post.post_like && post.post_like.length > 0
+                                                                    ? post.post_like.some(like => user.id == like.user_id && like.upvote_status)
+                                                                        ? 'text-blue-600'
+                                                                        : 'text-gray-600'
+                                                                    : 'text-gary-600'
+                                                                }`}
+                                                        >
                                                             <MdOutlineThumbUpAlt className='text-lg' />
-                                                        </span>
+                                                        </button>
                                                         <span>{post.gross_votes}</span>
-                                                        <span className='text-red-600'><MdOutlineThumbDown className='text-lg' /></span>
+
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                // e.stopPropagation();
+                                                                handleUpvotePost(post.slug, false)
+                                                            }}
+                                                            className={` 
+                                                            ${user && post.post_like && post.post_like.length > 0
+                                                                    ? post.post_like.some(like => user.id == like.user_id && !like.upvote_status)
+                                                                        ? 'text-red-600'
+                                                                        : 'text-gray-600'
+                                                                    : 'text-gary-600'
+                                                                }`}
+                                                        >
+                                                            <MdOutlineThumbDown className='text-lg' />
+                                                        </button>
                                                     </div>
 
 
@@ -120,31 +166,15 @@ function IndexPosts() {
                                             </div>
                                         </div>
                                     </div>
-
-
                                 </Link>
-
                             )
-                            :
-                            <></>
-                    }
+                        }
+                    </center>
 
-                    {/* posts */}
-
-
-
-
-
-                </center>
-
-
-            </main>
-
-
-        </>
-
-
-    )
+                </main >
+            </>
+        )
+    }
 }
 
 export default IndexPosts

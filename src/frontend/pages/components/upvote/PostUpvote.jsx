@@ -15,10 +15,8 @@ function PostUpvote({ slug, }) {
     const [post, setPost] = useState({});       // updates the upvotes unmber
     const [status, setStatus] = useState(0);        // for duplicate upvote
 
-
     // upvtes/slug returns post_like and post record 
     // post/upvote also return post 
-
 
     async function sendUpvote(vote) {
         setLoading(true);
@@ -30,8 +28,6 @@ function PostUpvote({ slug, }) {
             setPost(upvoteData.data.post.post)
             setStatusValue(upvoteData.data.post.status?.upvote_status);
         }
-
-        
         setLoading(false);
     }
 
@@ -45,14 +41,15 @@ function PostUpvote({ slug, }) {
             setStatus(0);
         }
     }
-    useEffect(() => {
 
+    useEffect(() => {
         const getUpvotes = async () => {
             setLoading(true);
             const upvoteData = await getGetData({ url: `post/upvotes/${slug}` });
             // console.log('posts: ', upvoteData);
             if (!upvoteData.errors) {
                 setPost(upvoteData.data.post.post)      // for upvote numbers
+
                 if (user) {
                     const value = upvoteData.data.post.status?.upvote_status;
                     setStatusValue(upvoteData.data.post.status?.upvote_status);     // for duplicate like and dislike
@@ -84,10 +81,10 @@ function PostUpvote({ slug, }) {
             </button>
 
             {
-                !loading ? <span className={`font-semibold ${loading ? 'rotate-x-180' : 'rotate-x-0'} `}>
+                <span className={`font-semibold ${loading ? 'rotate-x-180' : 'rotate-x-0'} `}>
                     {post.gross_votes}
                 </span>
-                    : <></>
+
             }
 
             <button

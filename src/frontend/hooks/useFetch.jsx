@@ -11,7 +11,7 @@ const useFetch = ({ url, fetchTrigger = null }) => {
 
     useEffect(() => {
 
-
+        console.log('inside useEffect custom hook useFetch');
         const fetchData = async () => {
             // not using try catch
 

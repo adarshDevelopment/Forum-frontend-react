@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Footer from '../components/Footer'
 import useFetch from '../../hooks/useFetch';
 import { useParams } from 'react-router-dom';
 
 import { CgProfile } from "react-icons/cg";
-import { BiDislike, BiLike, BiMessageSquare, BiShareAlt, BiMessageRounded } from "react-icons/bi";
+import { BiMessageSquare, BiShareAlt, BiMessageRounded } from "react-icons/bi";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { Link } from 'react-router-dom';
 
@@ -16,7 +16,7 @@ import CommentSection from './CommentSection';
 
 import { useDispatch } from 'react-redux';
 // change the fetchValue to change the dependency on useFetch post's useEffect
-import { setCommentId, toggleDeletePostModal, toggleDeleteCommentModal, toggleFetchCommentTrigger, toggleFetchPostTrigger, setPostId } from '../../../store/features/deleteModalSlice/deleteModalSlice';
+import {toggleDeletePostModal, toggleDeleteCommentModal, toggleFetchCommentTrigger, toggleFetchPostTrigger, setPostId } from '../../../store/features/deleteModalSlice/deleteModalSlice';
 import { TiEdit } from "react-icons/ti";
 
 import getPutData from '../../../helperFunctions/getPutData';
@@ -33,7 +33,7 @@ function ShowPost() {
     const fetchPostTrigger = useSelector(state => state.deleteModalSlice.fetchPostTrigger)
     const dispatch = useDispatch();
     const { data, loading, errors, isSuccess } = useFetch({ url: `post/${slug}`, fetchTrigger: fetchPostTrigger })
-    // console.log('top data: ', data);
+
 
     if (errors?.status == 404) {
         toast.error('Post not found');

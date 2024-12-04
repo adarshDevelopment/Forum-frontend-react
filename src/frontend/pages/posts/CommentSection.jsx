@@ -80,7 +80,7 @@ function CommentSection({ comments }) {
         console.log('data: ', upvotedData.data.updatedComment);
 
         setLocalComments(prevState =>
-            prevState.map((comment, index) => {
+            prevState.map((comment) => {
                 if (comment.id == id) {     // if fetched comment == one ofthe comments in the list, update its gross_upvotes and comment_like
                     return { ...comment, gross_votes: upvotedData.data.updatedComment.gross_votes, comment_like: upvotedData.data.updatedComment.comment_like }
                 }
@@ -90,11 +90,7 @@ function CommentSection({ comments }) {
         );
     }
 
-
-    console.log('local comments: ', localComments);
-
-
-
+    // console.log('local comments: ', localComments);
 
     // ############################################################################################################################
 

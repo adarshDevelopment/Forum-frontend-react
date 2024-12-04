@@ -30,13 +30,16 @@ import DeletePostModal from './pages/components/modals/DeletePostModal';
 
 function Home() {
 
+    const dispatch = useDispatch();
+
+
     const user = useSelector(state => state.auth.user);
 
     // token and fetchUser
 
     // const token = localStorage.getItem('token');
     const token = useSelector(state => state.auth.token);
-    const dispatch = useDispatch();
+
 
     useEffect(() => {
         dispatch(fetchUser());
@@ -52,7 +55,6 @@ function Home() {
 
             <div className=' relative'>
 
-
                 <Login />
                 <SignUp />
 
@@ -60,10 +62,8 @@ function Home() {
                 <DeletePostModal />
                 <Header />
 
-
                 {/* main content div */}
                 <div className='grid grid-cols-12 mt-16 relative'>
-
 
                     {/* Drop down menus */}
                     <ProfileDropDown />
@@ -92,10 +92,7 @@ function Home() {
                     {/* footer */}
 
 
-
                     {/* right side */}
-
-
 
                     {/* ######################################################################################################################################################################## */}
 
