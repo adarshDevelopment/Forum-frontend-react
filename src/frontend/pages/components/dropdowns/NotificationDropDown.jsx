@@ -42,6 +42,9 @@ function NotificationDropDown() {
 
     }, [notificationValue])
 
+
+    
+
     if (notificationValue) {
         return (
             <>
@@ -227,6 +230,7 @@ function NotificationDropDown() {
                         </div>
                     </div>
 
+                    {/* ------------------------------------------------------------------------------------------------ */}
                     <div className=' flex justify-between py-2'>
                         <button className=' items-center mx-auto  bg-custom-gray w-[80%] rounded-3xl py-2 font-semibold text-gray-700 hover:bg-gray-200 hover:underline' > See All</button>
 
