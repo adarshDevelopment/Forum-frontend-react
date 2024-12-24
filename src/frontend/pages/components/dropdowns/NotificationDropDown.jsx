@@ -1,7 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { SlOptions } from "react-icons/sl";
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { toggleNotificationDropdown } from '../../../../store/features/modalSlice/toggleSlice';
+import useFetch from '../../../hooks/useFetch';
+import getGetData from '../../../../helperFunctions/getGetData';
+import getPostData from '../../../../helperFunctions/getPostData';
 
 
 function NotificationDropDown() {
@@ -30,6 +33,9 @@ function NotificationDropDown() {
 
     }
 
+
+
+
     useEffect(() => {
         if (notificationValue) {
             document.addEventListener('click', hanldeClickOutside);
@@ -43,7 +49,36 @@ function NotificationDropDown() {
     }, [notificationValue])
 
 
-    
+    // fetch notifications
+    const user = useSelector(state => state.auth.user);
+    const [notificationList, setNotificationList] = useState([]);
+
+    const fetchNotifications = async () => {
+        const data = await getGetData({ url: `notification/${user.user?.id}` });
+        setNotificationList(data.data.notifications);
+    }
+
+    useEffect(() => {
+        fetchNotifications()
+    }, [])
+
+    const clickOnNotification = async (id) => {
+        // set seen value to true. use await
+        const data = await getPostData({ url: 'clickOnNotification', formData: { notificationId: id } });
+        const curentNotification = data.data.notification;
+
+        setNotificationList(notificationList.map(item=>{
+            if(item.id == curentNotification.id){
+                return {...item, ...curentNotification}
+            }
+            return item;
+        }))
+
+
+
+        // navigate to post 
+
+    }
 
     if (notificationValue) {
         return (
@@ -53,181 +88,48 @@ function NotificationDropDown() {
                     className='flex flex-col w-96 rounded-lg py-2 bg-white text-gray-800 shadow-lg fixed right-4 select-none max-h-[472px] z-20 '>
 
 
-                    <div className='flex flex-col gap-4 bg-gree-400 mx-2 max-h-[420px] overflow-y-auto border-b '>
+                    <div className='flex flex-col gap-2 bg-gree-400 mx-2 h-[320px] overflow-y-auto border-b bg-red-40 '>
+
+                        {
+                            notificationList
+                                ? notificationList?.map(notification =>
+                                    <div
+                                        key={notification.id}
+                                        onClick={() => clickOnNotification(notification.id)}
+                                        className={`grid grid-cols-12 p-1 cursor-pointer hover:bg-custom-gray ${notification.is_seen ? 'bg-white' : 'bg-slate-100'}`}>
+
+                                        {/* prefix */}
+                                        <div className='col-span-2 bg-pink-40 py-2 flex justify-center'>
+                                            Image
+                                        </div>
+
+                                        {/* middle part */}
+                                        <div className='col-span-9 bg-green-40 px-2 flex flex-col justify-center py-2'>
+                                            <div className=''>
+                                                <span className='text-gray-800'>{notification.title}</span>
+                                                <span>. <span className='text-sm text-gray-600'> 4d</span></span>
+                                            </div>
+
+                                            <div className="text-sm text-gray-600">
+                                                {notification.message}
+                                            </div>
+
+                                        </div>
+
+                                        {/* end option part */}
+                                        <div className='col-span-1 bg-blue-40 flex flex-col items-center justify-start py-2'>
+                                            <div className=' p-2 rounded-full cursor-pointer hover:bg-custom-gray'>
+                                                <SlOptions className='= rounded-full text-sm text-gray-500' />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                                : <></>
+                        }
 
                         {/* notification row */}
-                        <div className='grid grid-cols-12 p-1 cursor-pointer hover:bg-custom-gray'>
 
-                            {/* prefix */}
-                            <div className='col-span-2 bg-pink-40 py-2 flex justify-center'>
-                                Image
-                            </div>
 
-                            {/* middle part */}
-                            <div className='col-span-9 bg-green-40 px-2 flex flex-col justify-center py-2'>
-                                <div className=''>
-                                    <span className='text-gray-800'>Notification title</span>
-                                    <span>. <span className='text-sm text-gray-600'> 4d</span></span>
-                                </div>
-
-                                <div className="text-sm text-gray-600">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem dolorum ...
-                                </div>
-
-                            </div>
-
-                            {/* end option part */}
-                            <div className='col-span-1 bg-blue-40 flex flex-col items-center justify-start py-2'>
-                                <div className=' p-2 rounded-full cursor-pointer hover:bg-custom-gray'>
-                                    <SlOptions className='= rounded-full text-lg' />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* notification row */}
-                        <div className='bg-slate-100 grid grid-cols-12 p-1 cursor-pointer hover:bg-custom-gray '>
-
-                            {/* prefix */}
-                            <div className='col-span-2 bg-pink-40 overflow-y-auto py-2 flex justify-center'>
-                                Image
-                            </div>
-
-                            {/* middle part */}
-                            <div className='col-span-9 bg-green-40 px-1 flex flex-col justify-center py-2'>
-                                <div className=''>
-                                    <span className='text-gray-800'>Notification title</span>
-                                    <span>. <span className='text-sm text-gray-600'> 4d</span></span>
-                                </div>
-
-                                <div className="text-sm text-gray-600">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem dolorum ...
-                                </div>
-
-                            </div>
-
-                            {/* end option part */}
-                            <div className='col-span-1 bg-blue-40 flex flex-col items-center justify-start py-2'>
-                                <div className=' p-2 rounded-full cursor-pointer hover:bg-custom-gray'>
-                                    <SlOptions className='= rounded-full text-lg' />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* notification row */}
-                        <div className='grid grid-cols-12 p-1 cursor-pointer hover:bg-custom-gray'>
-
-                            {/* prefix */}
-                            <div className='col-span-2 bg-pink-40 overflow-y-auto py-2 flex justify-center'>
-                                Image
-                            </div>
-
-                            {/* middle part */}
-                            <div className='col-span-9 bg-green-40 px-1 flex flex-col justify-center py-2'>
-                                <div className=''>
-                                    <span className='text-gray-800'>Notification title</span>
-                                    <span>. <span className='text-sm text-gray-600'> 4d</span></span>
-                                </div>
-
-                                <div className="text-sm text-gray-600">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem dolorum ...
-                                </div>
-
-                            </div>
-
-                            {/* end option part */}
-                            <div className='col-span-1 bg-blue-40 flex flex-col items-center justify-start py-2'>
-                                <div className=' p-2 rounded-full cursor-pointer hover:bg-custom-gray'>
-                                    <SlOptions className='= rounded-full text-lg' />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* notification row */}
-                        <div className='grid grid-cols-12 p-1 cursor-pointer hover:bg-custom-gray'>
-
-                            {/* prefix */}
-                            <div className='col-span-2 bg-pink-40 overflow-y-auto py-2 flex justify-center'>
-                                Image
-                            </div>
-
-                            {/* middle part */}
-                            <div className='col-span-9 bg-green-40 px-1 flex flex-col justify-center py-2'>
-                                <div className=''>
-                                    <span className='text-gray-800'>Notification title</span>
-                                    <span>. <span className='text-sm text-gray-600'> 4d</span></span>
-                                </div>
-
-                                <div className="text-sm text-gray-600">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem dolorum ...
-                                </div>
-
-                            </div>
-
-                            {/* end option part */}
-                            <div className='col-span-1 bg-blue-40 flex flex-col items-center justify-start py-2'>
-                                <div className=' p-2 rounded-full cursor-pointer hover:bg-custom-gray'>
-                                    <SlOptions className='= rounded-full text-lg' />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* notification row */}
-                        <div className='grid grid-cols-12 p-1 cursor-pointer hover:bg-custom-gray'>
-
-                            {/* prefix */}
-                            <div className='col-span-2 bg-pink-40 overflow-y-auto py-2 flex justify-center'>
-                                Image
-                            </div>
-
-                            {/* middle part */}
-                            <div className='col-span-9 bg-green-40 px-1 flex flex-col justify-center py-2'>
-                                <div className=''>
-                                    <span className='text-gray-800'>Notification title</span>
-                                    <span>. <span className='text-sm text-gray-600'> 4d</span></span>
-                                </div>
-
-                                <div className="text-sm text-gray-600">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem dolorum ...
-                                </div>
-
-                            </div>
-
-                            {/* end option part */}
-                            <div className='col-span-1 bg-blue-40 flex flex-col items-center justify-start py-2'>
-                                <div className=' p-2 rounded-full cursor-pointer hover:bg-custom-gray'>
-                                    <SlOptions className='= rounded-full text-lg' />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* notification row */}
-                        <div className='grid grid-cols-12 p-1 cursor-pointer hover:bg-custom-gray'>
-
-                            {/* prefix */}
-                            <div className='col-span-2 bg-pink-40 overflow-y-auto py-2 flex justify-center'>
-                                Image
-                            </div>
-
-                            {/* middle part */}
-                            <div className='col-span-9 bg-green-40 px-1 flex flex-col justify-center py-2'>
-                                <div className=''>
-                                    <span className='text-gray-800'>Notification title</span>
-                                    <span>. <span className='text-sm text-gray-600'> 4d</span></span>
-                                </div>
-
-                                <div className="text-sm text-gray-600">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem dolorum ...
-                                </div>
-
-                            </div>
-
-                            {/* end option part */}
-                            <div className='col-span-1 bg-blue-40 flex flex-col items-center justify-start py-2'>
-                                <div className=' p-2 rounded-full cursor-pointer hover:bg-custom-gray'>
-                                    <SlOptions className='= rounded-full text-lg' />
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     {/* ------------------------------------------------------------------------------------------------ */}
