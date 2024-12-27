@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { Toaster, toast } from 'sonner';
-import { useRef, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -13,17 +12,14 @@ import Header from './pages/components/header/Header';
 import ProfileDropDown from './pages/components/dropdowns/ProfileDropDown';
 import NotificationDropDown from './pages/components/dropdowns/NotificationDropDown';
 import Sidebar from './pages/components/Sidebar';
-import Footer from './pages/components/Footer';
 import Login from './pages/components/Login';
 import SignUp from './pages/components/SignUp';
 import DeleteCommentModal from './pages/components/modals/DeleteCommentModal';
 
 
-
+import echo from '../echo';
 
 import { Outlet } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import CreatePost from './pages/posts/CreatePost';
 import DeletePostModal from './pages/components/modals/DeletePostModal';
 
 
@@ -41,6 +37,23 @@ function Home() {
     const token = useSelector(state => state.auth.token);
 
 
+
+    useEffect(() => {
+        const channel = echo.channel('chat');
+
+        channel.listen('chat', e => {
+            console.log('Event data: ', e);
+        });
+
+        return () => {
+            channel.stopListening('chat');
+        }
+    }, []);
+
+
+
+
+
     useEffect(() => {
         dispatch(fetchUser());
     }, [token])
@@ -48,6 +61,7 @@ function Home() {
     // console.log('user in layout: ', user)
 
     // console.log('user from layout: ', user);
+
     if (user.loading) {
         return <></>
     } else {

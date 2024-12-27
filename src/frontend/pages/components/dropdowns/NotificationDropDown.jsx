@@ -58,8 +58,12 @@ function NotificationDropDown() {
         setNotificationList(data.data.notifications);
     }
 
+
     useEffect(() => {
-        fetchNotifications()
+        if (user.user) {
+            fetchNotifications()
+        }
+
     }, [])
 
     const clickOnNotification = async (id) => {
@@ -67,9 +71,9 @@ function NotificationDropDown() {
         const data = await getPostData({ url: 'clickOnNotification', formData: { notificationId: id } });
         const curentNotification = data.data.notification;
 
-        setNotificationList(notificationList.map(item=>{
-            if(item.id == curentNotification.id){
-                return {...item, ...curentNotification}
+        setNotificationList(notificationList.map(item => {
+            if (item.id == curentNotification.id) {
+                return { ...item, ...curentNotification }
             }
             return item;
         }))

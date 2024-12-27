@@ -21,6 +21,7 @@ const getPostData = async ({ url, formData }) => {
 
     } catch (e) {
         if (e.response) {
+            console.log(e.response);
             errors = e.response.data;
         }
         else {
