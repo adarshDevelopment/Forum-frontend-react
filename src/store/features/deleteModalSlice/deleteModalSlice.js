@@ -37,7 +37,7 @@ const deleteModalSlice = createSlice({
             }
             state.deleteComment.commentId = action.payload;
         },
-
+        
 
         // delete post 
         toggleDeletePostModal: (state, action) => {

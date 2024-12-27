@@ -12,7 +12,7 @@ const getPutData = async ({ url, formDadta }) => {
                 'Accept': 'application/json'
             }
         });
-        return { isSuccess: true, errors: null };
+        return { data: data, isSuccess: true, errors: null };
 
     } catch (e) {
         if (e.response) {

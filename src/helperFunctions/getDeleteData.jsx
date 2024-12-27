@@ -14,7 +14,7 @@ const getDeleteData = async ({ url, id }) => {
             }
         })
 
-        return { isDeleteSuccess: true, deleteErrors: null };
+        return { data: data, isDeleteSuccess: true, deleteErrors: null };
     } catch (e) {
         if (e.response) {
             return { isDeleteSuccess: false, deleteErrors: e.response.data };

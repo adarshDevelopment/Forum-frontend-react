@@ -9,18 +9,18 @@ import { toggleDeleteCommentModal, setCommentId } from '../../../store/features/
 import getPutData from '../../../helperFunctions/getPutData';
 import { toggleFetchCommentTrigger } from '../../../store/features/deleteModalSlice/deleteModalSlice';
 import getPostData from '../../../helperFunctions/getPostData';
+import DeleteCommentModal from '../components/modals/DeleteCommentModal';
+import { useFormState } from 'react-dom';
 
 
-function CommentSection({ comments }) {
+function CommentSection({ comments, setPost }) {
     // comment delete stuff
     const user = useSelector(state => state.auth.user.user);        // for matching post_id and logged in user's id
     const dispatch = useDispatch();
 
-    const [localComments, setLocalComments] = useState([]);
-    useEffect(() => {
-        setLocalComments(comments);
-    }, [comments])
     // ############################################################################################################################
+
+
     // for edit comment 
     const textareaRef = useRef();
 
@@ -46,211 +46,244 @@ function CommentSection({ comments }) {
             const foundComment = comments.find(comment => comment.id == editCommnetId);
             setEditComment(foundComment);
         }
-
     }, [editCommnetId])
 
-    const [updateLoading, setUpdateLoading] = useState(false);
+    const [updateLoading, setUpdateLoading] = useState(true);
 
     const handleUpdateForm = async () => {
         setUpdateLoading(true);
-        console.log('comment: ', editComment.comment);
         const updateComment = editComment.comment;
-        const { isSuccess, errors } = await getPutData({ url: `comment/${editCommnetId}`, formDadta: { comment: updateComment } });
+        const { data, isSuccess, errors } = await getPutData({ url: `comment/${editCommnetId}`, formDadta: { comment: updateComment } });
+
+        const updatedComment = data.data.comment;
+
         setUpdateLoading(false);        // setting loading to false
         toggleShowEditComment(false);       // toggle comment textarea
         setCommentId(-1);        // reset comment ID
 
         if (isSuccess) {
             toast.success('Comment successfully edited');
+
+            setPost(state => ({
+                ...state,
+                comments_ordered: state.comments_ordered.map(item => {
+                    if (item.id == updatedComment.id) {
+                        return updatedComment;
+                    } else {
+                        return item;
+                    }
+                })
+            }))
+
             dispatch(toggleFetchCommentTrigger());      // fetch comment trigger to reload comments
         }
         if (errors) {
             toast.error('')
         }
     }
+
     // ############################################################################################################################
-
     // comment upvote and downvote
-
-
     const handleUpvoteComment = async (id, upvoteStatus) => {
-        setUpdateLoading(true);
+
+        // call api to handle upvote comment
+        // make changes to the state
+
+        // setUpdateLoading(true);
         const upvotedData = await getPostData({ url: 'comment/upvote', formData: { comment_id: id, upvoteStatus: upvoteStatus } });
 
-        console.log('data: ', upvotedData.data.updatedComment);
+        console.log('upvoted comment: ', upvotedData.data.updatedComment);
+        const targetComment = upvotedData.data.updatedComment;
+    
+        setPost(state => ({
+            ...state,
+            comments_ordered: state.comments_ordered.map(comment => comment.id == targetComment.id ? targetComment : comment)
 
-        setLocalComments(prevState =>
-            prevState.map((comment) => {
-                if (comment.id == id) {     // if fetched comment == one ofthe comments in the list, update its gross_upvotes and comment_like
-                    return { ...comment, gross_votes: upvotedData.data.updatedComment.gross_votes, comment_like: upvotedData.data.updatedComment.comment_like }
-                }
-                return comment;
+        }))
 
-            })
-        );
+        // setLocalComments(prevState =>
+        //     prevState.map((comment) =>
+        //         comment.id == updatedComment.id
+        //             ? updatedComment
+        //             : item
+        //     )   // if ids match replace/return the comment object with the udpated comment 
+        // );
     }
-
-    // console.log('local comments: ', localComments);
 
     // ############################################################################################################################
 
+    // delete commetn
+
+
+    const [deleteCommentId, setDeleteCommentId] = useState(-1);
+    const [showDeleteCommentModal, setShowDeleteCommentModal] = useState(false);
+    //  delete Comment
+    const deleteComment = (commentId) => {
+        setDeleteCommentId(commentId);
+        setShowDeleteCommentModal(true);
+    }
+
+
     return (
-        <div className='bg-blue-40 flex flex-col px-5 max-w-[755px] ml-28 py-6 flex-grow gap-4'>
-            {
-                localComments.map((comment, index) =>
-                    <div key={comment.id} className='bg-purple-40 flex bg-gray-50 rounded-xl p-2'>
+        <>
+            <DeleteCommentModal
+                showDeleteCommentModal={showDeleteCommentModal}
+                setShowDeleteCommentModal={setShowDeleteCommentModal}
+                setPost={setPost}
+                deleteCommentId={deleteCommentId}
+                setDeleteCommentId={setDeleteCommentId}
+            />
+            <div className='bg-blue-40 flex flex-col px-5 max-w-[755px] ml-28 py-6 flex-grow gap-4'>
+                {
+                    comments.map((comment, index) =>
+                        <div key={comment.id} className='bg-purple-40 flex bg-gray-50 rounded-xl p-2'>
 
-                        {/* profile picture || First col*/}
-                        <div className='flex items-start gap-2 h-fit rounded-full'>
-                            <div className='h-[50px] w-[50px]'>
-                                <img
-                                    className='w-full h-full object-cover rounded-full'
-                                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLSzT6HpzeJ8HQ3Y_TT5FoFCrfBRwGvtqLoA&s" alt="" />
+                            {/* profile picture || First col*/}
+                            <div className='flex items-start gap-2 h-fit rounded-full'>
+                                <div className='h-[50px] w-[50px]'>
+                                    <img
+                                        className='w-full h-full object-cover rounded-full'
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLSzT6HpzeJ8HQ3Y_TT5FoFCrfBRwGvtqLoA&s" alt="" />
+                                </div>
                             </div>
-                        </div>
 
-                        {/* username, comment and Like/Disklike buttons || second col*/}
-                        <div className='bg-orange-40 px-3 flex flex-col bg-red-40 w-full '>
-                            {
+                            {/* username, comment and Like/Disklike buttons || second col*/}
+                            <div className='bg-orange-40 px-3 flex flex-col bg-red-40 w-full '>
+                                {
 
-                                // text area replaces the whole div if toggle for edit comment is on
-                                showEditComment && comment.id == editCommnetId
-                                    ?
+                                    // text area replaces the whole div if toggle for edit comment is on
+                                    showEditComment && comment.id == editCommnetId
+                                        ?
 
-                                    <div className='relative flex flex-col border border-gray-500 rounded-2xl bg-white'>
-                                        {/* actual text area */}
-                                        <textarea
-                                            required
-                                            onInput={handleInput}
-                                            value={editComment?.comment}
-                                            onChange={e => setEditComment({ ...editComment, comment: e.target.value })}
-                                            ref={textareaRef}
-                                            className=' w-full min-h-[100px] focus:outline-none px-3 py-3 border-0 rounded-2xl'
-                                        >
-                                        </textarea >
-
-
-                                        {/* cancel and cave buttons */}
-                                        <div className=' right-3 bottom-3 flex justify-end p-2 gap-2'>
-                                            <button
-                                                onClick={() => {
-                                                    setEditCommentId(false);
-                                                    toggleShowEditComment(false);
-                                                }}
-                                                className='bg-custom-gray-orange px-3 py-2 rounded-full font-semibold hover:bg-custom-gray-dark'
+                                        <div className='relative flex flex-col border border-gray-500 rounded-2xl bg-white'>
+                                            {/* actual text area */}
+                                            <textarea
+                                                required
+                                                onInput={handleInput}
+                                                value={editComment?.comment}
+                                                onChange={e => setEditComment({ ...editComment, comment: e.target.value })}
+                                                ref={textareaRef}
+                                                className=' w-full min-h-[100px] focus:outline-none px-3 py-3 border-0 rounded-2xl'
                                             >
-                                                Cancel
-                                            </button>
-
-                                            <button
-                                                onClick={handleUpdateForm}
-                                                // disabled={postUpdateLoading || !postContent}
-                                                className={`bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-full font-semibold ${updateLoading ? 'bg-indigo-700' : ''}`}
-                                            >
-                                                Update
-                                            </button>
-                                        </div>
-                                    </div >
-
-                                    // actual comments 
-                                    :
-                                    <div className='relative'>
-                                        {/* username and actual comment  */}
-                                        <div className='flex items-center'>
-                                            <span className='text-sm text-gray-500'>u/{comment.user.name}</span>
-                                            <span className='text-sm text-gray-500'> - 11 hours ago</span>
-                                        </div>
-                                        <span className=' break-all'> {comment.comment}</span>
+                                            </textarea >
 
 
-
-                                        {/*  like and options*/}
-                                        <div className='flex items-center gap-1 text-xl'>
-
-                                            {/* like and disklike */}
-                                            <div className='flex gap-2 items-center pr-2 min-w-[80px] justify-between'>
+                                            {/* cancel and cave buttons */}
+                                            <div className=' right-3 bottom-3 flex justify-end p-2 gap-2'>
                                                 <button
-                                                    onClick={() => { if (user) { handleUpvoteComment(comment.id, true) } }}
-                                                    className={`hover:text-indigo-600 
+                                                    onClick={() => {
+                                                        setEditCommentId(false);
+                                                        toggleShowEditComment(false);
+                                                    }}
+                                                    className='bg-custom-gray-orange px-3 py-2 rounded-full font-semibold hover:bg-custom-gray-dark'
+                                                >
+                                                    Cancel
+                                                </button>
+
+                                                <button
+                                                    onClick={handleUpdateForm}
+                                                    // disabled={postUpdateLoading || !postContent}
+                                                    className={`bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-full font-semibold ${updateLoading ? 'bg-indigo-700' : ''}`}
+                                                >
+                                                    Update
+                                                </button>
+                                            </div>
+                                        </div >
+
+                                        // actual comments 
+                                        :
+                                        <div className='relative'>
+                                            {/* username and actual comment  */}
+                                            <div className='flex items-center'>
+                                                <span className='text-sm text-gray-500'>u/{comment.user.name}</span>
+                                                <span className='text-sm text-gray-500'> - 11 hours ago</span>
+                                            </div>
+                                            <span className=' break-all'> {comment.comment}</span>
+
+
+
+                                            {/*  like and options*/}
+                                            <div className='flex items-center gap-1 text-xl'>
+
+                                                {/* like and disklike */}
+                                                <div className='flex gap-2 items-center pr-2 min-w-[80px] justify-between'>
+                                                    <button
+                                                        onClick={() => { if (user) { handleUpvoteComment(comment.id, true) } }}
+                                                        className={`hover:text-indigo-600 
                                                         ${comment.comment_like && comment.comment_like.length > 0 && user
-                                                            ? comment.comment_like.some(like => { if (like.user_id === user?.id && like.upvote_status == true) return true; })
-                                                                ? 'text-blue-700'
+                                                                ? comment.comment_like.some(like => { if (like.user_id === user?.id && like.upvote_status == true) return true; })
+                                                                    ? 'text-blue-700'
+                                                                    : 'text-gray-600'
                                                                 : 'text-gray-600'
-                                                            : 'text-gray-600'
-                                                        }
+                                                            }
                                                     `}>
-                                                    <BiLike />
-                                                </button>
+                                                        <BiLike />
+                                                    </button>
 
-                                                <span className='text-sm font-semibold text-gray-600'>
-                                                    {/* {comment.gross_votes} */}
-                                                    {localComments[index].gross_votes}
-                                                </span>
+                                                    <span className='text-sm font-semibold text-gray-600'>
+                                                        {/* {comment.gross_votes} */}
+                                                        {comments[index].gross_votes}
+                                                    </span>
 
-                                                <button
-                                                    onClick={() => { if (user) { handleUpvoteComment(comment.id, false) } }}
-                                                    className={`hover:text-indigo-600 
-                                                        ${localComments[index].comment_like && localComments[index].comment_like.length > 0 && user
-                                                            ? localComments[index].comment_like.some(like => { if (like.user_id === user.id && like.upvote_status == false) return true; })
-                                                                ? 'text-orange-700'
+                                                    <button
+                                                        onClick={() => { if (user) { handleUpvoteComment(comment.id, false) } }}
+                                                        className={`hover:text-indigo-600 
+                                                        ${comments[index].comment_like && comments[index].comment_like.length > 0 && user
+                                                                ? comments[index].comment_like.some(like => { if (like.user_id === user.id && like.upvote_status == false) return true; })
+                                                                    ? 'text-orange-700'
+                                                                    : 'text-gray-600'
                                                                 : 'text-gray-600'
-                                                            : 'text-gray-600'
-                                                        }
+                                                            }
                                                     `}>
-                                                    <BiDislike />
-                                                </button>
-                                            </div>
-                                            {/* end of like and dislike */}
+                                                        <BiDislike />
+                                                    </button>
+                                                </div>
+                                                {/* end of like and dislike */}
 
 
-                                            <div className='flex gap-1 items-center px-2 py-2 rounded-full cursor-pointer hover:bg-custom-gray-orange'>
-                                                <BiMessageRounded />
-                                                <span className='text-sm text-gray-600 font-semibold'>Reply</span>
-                                            </div>
+                                                <div className='flex gap-1 items-center px-2 py-2 rounded-full cursor-pointer hover:bg-custom-gray-orange'>
+                                                    <BiMessageRounded />
+                                                    <span className='text-sm text-gray-600 font-semibold'>Reply</span>
+                                                </div>
 
-                                            {
-                                                user
-                                                    ?
-                                                    user.id == comment.user_id
-                                                        ? <>
-                                                            <button
-                                                                onClick={() => {
-                                                                    dispatch(setCommentId(comment.id));
-                                                                    dispatch(toggleDeleteCommentModal());
-                                                                }}
-                                                                className='p-2 rounded-full hover:bg-custom-gray-orange font-semibold'>
-                                                                <PiTrash />
-                                                            </button>
+                                                {/* Edit button */}
+                                                {
+                                                    user
+                                                        ?
+                                                        user.id == comment.user_id
+                                                            ? <>
+                                                                <button
+                                                                    onClick={() => deleteComment(comment.id)}
+                                                                    className='p-2 rounded-full hover:bg-custom-gray-orange font-semibold'>
+                                                                    <PiTrash />
+                                                                </button>
 
-                                                            <button
-                                                                onClick={() => {
-                                                                    setEditCommentId(comment.id);
-                                                                    const foundComment = comments.find(comment => comment.id == editCommnetId);
-                                                                    toggleShowEditComment(true);
-                                                                    textareaRef.current.focus;
-                                                                }}
-                                                                className='text-gray-700 p-2 rounded-full text-xl hover:bg-custom-gray-orange font-semibold'>
-                                                                <TiEdit />
-                                                            </button>
-                                                        </>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setEditCommentId(comment.id);
+                                                                        const foundComment = comments.find(comment => comment.id == editCommnetId);
+                                                                        toggleShowEditComment(true);
+                                                                        textareaRef.current.focus;
+                                                                    }}
+                                                                    className='text-gray-700 p-2 rounded-full text-xl hover:bg-custom-gray-orange font-semibold'>
+                                                                    <TiEdit />
+                                                                </button>
+                                                            </>
+                                                            : <></>
                                                         : <></>
-                                                    : <></>
-                                            }
+                                                }
 
+                                            </div>
                                         </div>
-
-                                    </div>
-                            }
+                                }
+                            </div>
 
                         </div>
 
-
-                    </div>
-
-                )
-            }
-        </div >
-
+                    )
+                }
+            </div >
+        </>
     )
 
 }

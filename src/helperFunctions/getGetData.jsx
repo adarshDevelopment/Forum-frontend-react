@@ -14,7 +14,10 @@ export default async function getGetData({ url }) {
         return { errors: null, data: data.data }
     } catch (e) {
         if (e.response) {
+            return {errors:e.response }
             return { errors: 'Internal Server error', data: null };
+        }else{
+            return {errors:'Client side error'}
         }
 
         console.log('from getGetPostData', e);

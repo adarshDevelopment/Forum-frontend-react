@@ -5,7 +5,7 @@ import { RxCrossCircled } from "react-icons/rx";
 import { useNavigate } from 'react-router-dom';
 import { toggleDeletePostModal, setPostId } from '../../../../store/features/deleteModalSlice/deleteModalSlice';
 import getDeleteData from '../../../../helperFunctions/getDeleteData';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 export default function DeletePostModal() {
 
@@ -28,15 +28,15 @@ export default function DeletePostModal() {
         const { isDeleteSuccess, deleteErrors } = await getDeleteData({ url: 'post', id: deleteModalSlice.postId })
         setLoading(false);
 
-
         // console.log('isDeletesuccess: ', isDeleteSuccess);
         if (isDeleteSuccess) {
-            // navigate('/');      // navigate to home page
-            toast.success('Comment successfully deleted');
+            toast.success('Post successfully deleted');
+            navigate('/');      // navigate to home page
+            toast.success('Post successfully deleted');
         } else {
-            toast.error('Error deleting comment')
+            toast.error('Error deleting Post')
         }
-        // dispatch(toggleDeletePostModal(false));
+        dispatch(toggleDeletePostModal(false));
 
     }
     if (deleteModalSlice.showDeletePostModal) {
@@ -47,7 +47,7 @@ export default function DeletePostModal() {
 
                     <div>
                         <div className='bg-yellow-40 flex items-center justify-between'>
-                            <span className='font-bold text-xl'>Delete Comment</span>
+                            <span className='font-bold text-xl'>Delete Post</span>
                             <button
                                 onClick={closeModal}
                                 className='text-3xl text-gray-600 hover:text-gray-900'>

@@ -16,13 +16,14 @@ import CommentSection from './CommentSection';
 
 import { useDispatch } from 'react-redux';
 // change the fetchValue to change the dependency on useFetch post's useEffect
-import {toggleDeletePostModal, toggleDeleteCommentModal, toggleFetchCommentTrigger, toggleFetchPostTrigger, setPostId } from '../../../store/features/deleteModalSlice/deleteModalSlice';
+import { toggleDeletePostModal, toggleDeleteCommentModal, toggleFetchCommentTrigger, toggleFetchPostTrigger, setPostId } from '../../../store/features/deleteModalSlice/deleteModalSlice';
 import { TiEdit } from "react-icons/ti";
 
 import getPutData from '../../../helperFunctions/getPutData';
 
 import { useNavigate } from 'react-router-dom';
 import PostUpvote from '../components/upvote/PostUpvote';
+import getGetData from '../../../helperFunctions/getGetData';
 
 
 function ShowPost() {
@@ -32,23 +33,42 @@ function ShowPost() {
     const fetchCommentTrigger = useSelector(state => state.deleteModalSlice.fetchCommentTrigger)
     const fetchPostTrigger = useSelector(state => state.deleteModalSlice.fetchPostTrigger)
     const dispatch = useDispatch();
-    const { data, loading, errors, isSuccess } = useFetch({ url: `post/${slug}`, fetchTrigger: fetchPostTrigger })
-
-
-    if (errors?.status == 404) {
-        toast.error('Post not found');
-        navigate('/')
-    }
-    // if 404 error?
-    // if(errors.)
-
-    const loggedInUser = useSelector(state => state.auth.user.user);
-
-    //  using state fetchCommentTrigger to refrehs comment section if user creates or deletes a comment
-    const comments = useFetch({ url: `comment/${slug}`, fetchTrigger: fetchCommentTrigger });
-    const commentList = comments.data?.comments;
 
     // ###########################################################################
+    // post and comments fetch
+    const [postLoading, setPostLoading] = useState(true);
+    const [postErrors, setPostErrors] = useState(null);
+
+    // fetch post along with comments 
+    const [post, setPost] = useState({});
+    const fetchPostWithComments = async () => {
+        const data = await getGetData({ url: `post/${slug}` });
+        // fetch post from the post api and set it to the post state
+        if (data.errors) {
+            setPostErrors(data.errors);
+            console.log('errors: ', data.errors);
+            if (data.errors.status == 404) {
+                navigate('/');
+                toast.error('Post not found');
+            }
+            if (data.errors) {
+                navigate('/');
+                toast.error(data.errors);
+            }
+        }
+        setPost(data.data.post.post);
+        setPostLoading(false);
+    }
+
+    useEffect(() => {
+        fetchPostWithComments();
+    }, [])
+
+    // end of fetch post along with comments 
+    // ###########################################################################
+
+
+    const loggedInUser = useSelector(state => state.auth.user.user);
 
     // comment text area/input toggle
     const [showTextField, setShowTextField] = useState(false);
@@ -67,33 +87,39 @@ function ShowPost() {
             textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
         }
     }
-
+    // end of textarea input toggle 
+    // ###########################################################################
 
     // post submission:
     const [comment, setComment] = useState('');
     const [commenLoading, setCommentLoading] = useState(false);
     const handleSubmitForm = async () => {
         setCommentLoading(true);
-
         // const { data, isSuccess, errors }
         const commentData = await getPostData({ url: 'comment', formData: { comment, slug } });
         setCommentLoading(false);
-        // console.log('comment data: ', commentData);
 
+        // if success, set new comment to the comment list 
         if (commentData.isSuccess) {
             toast.success('Comment successfuly posted');
             textareaRef.current.blur();
             setComment('');
-            setCommentNumber(comments.data?.comments.length);
+
+            //   add newly added comment to the Post.comments_ordered arrary 
+            setPost(state => ({ ...state, comments_ordered: [commentData.data.comment, ...state.comments_ordered] }))
+
+            console.log('comment successful: ', commentData.data.comment);
+
+            // setCommentNumber(comments.data?.comments.length);       // what is this for? 
             // udpate fetchtrigger to update the commetns
-            dispatch(toggleFetchCommentTrigger());
+            // dispatch(toggleFetchCommentTrigger());
         }
         if (commentData.errors) {
             toast.error('Error posting comment');
         }
     }
     // End of post submission
-
+    // ###########################################################################
 
     // Edit post
     const [isEdit, setIsEdit] = useState(false);
@@ -108,8 +134,8 @@ function ShowPost() {
 
     useEffect(() => {       // set the post content 
         // console.log('data inside useEffect: ', data?.post.post.content);
-        setPostContent(data?.post?.post.content);
-    }, [data])
+        // setPostContent(data?.post?.post.content);
+    }, [])
 
     //  update submission
     const [postUpdateLoading, setPostUpdateeLoading] = useState(false);
@@ -118,7 +144,7 @@ function ShowPost() {
         const { isSuccess, errors } = await getPutData({ url: `post`, slug, formDadta: { slug, content: postContent } });
         setPostUpdateeLoading(false);
 
-        console.log('isScuccess: ', isSuccess);
+
         if (errors && !isSuccess) {
             toast.error('Error updating post');
         }
@@ -127,8 +153,6 @@ function ShowPost() {
             setIsEdit(false);
             dispatch(toggleFetchPostTrigger());
         }
-
-
     }
     // console.log('useEffect data: ', data);
 
@@ -136,26 +160,18 @@ function ShowPost() {
 
     useEffect(() => {
         // console.log('useEffect data: ', data?.post.comments.length);
-        setCommentNumber(data?.post.comments.length)
+        // setCommentNumber(data?.post.comments.length)
         // setCommentNumber()
-    }, [data?.post?.comments])
+    }, [])
 
     // end of edit post
+    // ###########################################################################
 
+    if (!postLoading && post) {
 
+        const user = post.user
+        const tag = post.tag;
 
-
-
-    // return component part
-    if (!loading && isSuccess && data?.post) {
-
-        const post = data.post.post;
-        const user = data.post.user;
-        const tag = data.post.tag;
-        // const comments = data.post.comments;
-
-
-        // console.log('comment: ', data.post.comments.length);
         return (
             <>
                 {/* center main grid */}
@@ -368,12 +384,10 @@ function ShowPost() {
                     {/* comment section */}
 
                     {
-                        !comments.loading && comments.isSuccess
-                            ?
-                            commentList
-                                ? <CommentSection comments={commentList} />
-                                : <></>
+                        post.comments_ordered
+                            ? <CommentSection comments={post.comments_ordered} setPost={setPost} />
                             : <></>
+
                     }
 
 

@@ -58,7 +58,7 @@ function Home() {
                 <Login />
                 <SignUp />
 
-                <DeleteCommentModal />
+                {/* <DeleteCommentModal /> */}
                 <DeletePostModal />
                 <Header />
 
