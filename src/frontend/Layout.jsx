@@ -40,10 +40,10 @@ function Home() {
 
     useEffect(() => {
         const channel = echo.channel('chat');
-
-        channel.listen('chat', e => {
-            console.log('Event data: ', e);
+        channel.listen('ChatEvent', (event) => {
+            console.log('Event data:', event);
         });
+
 
         return () => {
             channel.stopListening('chat');

@@ -108,7 +108,6 @@ function ShowPost() {
             //   add newly added comment to the Post.comments_ordered arrary 
             setPost(state => ({ ...state, comments_ordered: [commentData.data.comment, ...state.comments_ordered] }))
 
-            console.log('comment successful: ', commentData.data.comment);
 
             // setCommentNumber(comments.data?.comments.length);       // what is this for? 
             // udpate fetchtrigger to update the commetns
