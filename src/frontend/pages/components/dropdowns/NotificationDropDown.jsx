@@ -6,6 +6,8 @@ import useFetch from '../../../hooks/useFetch';
 import getGetData from '../../../../helperFunctions/getGetData';
 import getPostData from '../../../../helperFunctions/getPostData';
 
+import echo from '../../../../echo';
+
 
 function NotificationDropDown() {
 
@@ -64,6 +66,22 @@ function NotificationDropDown() {
             fetchNotifications()
         }
 
+    }, [])
+
+    useEffect(() => {
+        console.log('cheking useEFfect notifiation dropdown');
+    }, [])
+
+    useEffect(() => {
+        console.log('')
+        const channel = echo.channel('chat');
+        channel.listen('UpdateNotification', (event) => {
+            console.log('Event data from inside notification dropdown:', event);
+        })
+
+        return () => {
+            channel.stopListening('chat');
+        }
     }, [])
 
     const clickOnNotification = async (id) => {

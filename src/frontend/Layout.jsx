@@ -37,18 +37,16 @@ function Home() {
     const token = useSelector(state => state.auth.token);
 
 
+    // useEffect(() => {
+    //     // const channel = echo.channel('chat');
+    //     // channel.listen('UpdateNotification', (event) => {
+    //     //     console.log('Event data:', event);
+    //     // });
 
-    useEffect(() => {
-        const channel = echo.channel('chat');
-        channel.listen('ChatEvent', (event) => {
-            console.log('Event data:', event);
-        });
-
-
-        return () => {
-            channel.stopListening('chat');
-        }
-    }, []);
+    //     // return () => {
+    //     //     channel.stopListening('chat');
+    //     // }
+    // }, []);
 
 
 
