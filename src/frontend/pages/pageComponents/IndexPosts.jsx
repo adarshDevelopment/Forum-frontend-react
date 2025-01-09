@@ -4,6 +4,7 @@ import { MdOutlineThumbUpAlt, MdOutlineThumbDown } from "react-icons/md";
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import getPostData from '../../../helperFunctions/getPostData';
+import getGetData from '../../../helperFunctions/getGetData';
 
 function IndexPosts() {
 
@@ -11,16 +12,20 @@ function IndexPosts() {
 
     const user = useSelector(state => state.auth.user.user);
 
-    const { data, loading, errors } = useFetch({ url: 'posts' });
-
-
-
+    // const { data, loading, errors } = useFetch({ url: 'posts' });
 
     const [posts, setPosts] = useState([]);
-
     useEffect(() => {
-        setPosts(data?.posts);
-    }, [data])
+        const fetchPosts = async () => {
+            const data = await getGetData({ url: 'posts' });
+            console.log('data: ', data);
+            if (!data.errors) {
+                setPosts(data.data.posts);
+            }
+
+        }
+        fetchPosts();
+    }, [])
 
 
     const handleUpvotePost = async (postSlug, upvoteStatus) => {
@@ -159,10 +164,8 @@ function IndexPosts() {
                                                         <span>Report </span>
                                                     </div>
 
-
+                                                    
                                                 </div>
-
-
                                             </div>
                                         </div>
                                     </div>

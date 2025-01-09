@@ -263,7 +263,7 @@ function ShowPost() {
 
                             {/* likes */}
 
-                            <PostUpvote slug={slug} />
+                            <PostUpvote slug={slug} post={post} setPost={setPost} />
 
                             {/* comments */}
 
