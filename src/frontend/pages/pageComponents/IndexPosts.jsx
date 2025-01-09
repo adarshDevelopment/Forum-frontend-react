@@ -18,7 +18,6 @@ function IndexPosts() {
     useEffect(() => {
         const fetchPosts = async () => {
             const data = await getGetData({ url: 'posts' });
-            console.log('data: ', data);
             if (!data.errors) {
                 setPosts(data.data.posts);
             }
@@ -27,20 +26,23 @@ function IndexPosts() {
         fetchPosts();
     }, [])
 
+    useEffect(() => {
+        console.log('posts: ', posts);
+    }, [posts])
 
+
+    // upvotes post. returns the newly updated post with post with postLike
     const handleUpvotePost = async (postSlug, upvoteStatus) => {
         const data = await getPostData({ url: 'post/upvote', formData: { user: user.id, slug: postSlug, upvoteStatus } })
-
-        // console.log('data: ', data.data.updatedPost);       // updatedPost.data: id, slug, gross_votes
+        console.log('udpated data: ',data)
+        // udpate the post.gross_Votes with the new value 
         if (!data.errors) {
             setPosts(prevState => prevState.map(post => {
                 if (post.slug == postSlug) {
-                    return { ...post, gross_votes: data.data.updatedPost.gross_votes, post_like: data.data.updatedPost.post_like };
+                    return { ...post, gross_votes: data.data.updatedPost.post.gross_votes, post_like: data.data.updatedPost.post.post_like };
                 }
                 return post;
-            }
-
-            ));
+            }));
         }
     }
 
@@ -71,8 +73,6 @@ function IndexPosts() {
 
                                             {/* right parrt text */}
                                             <div className='flex flex-col justify-between bg-red-40 text-start px-2 w-full flex-grow overflow-hidden bg-red-40'>
-
-
 
                                                 {/* sub name and time */}
                                                 <div className='bg-orange-40 flex w-fit gap-2 items-center'>
@@ -164,7 +164,7 @@ function IndexPosts() {
                                                         <span>Report </span>
                                                     </div>
 
-                                                    
+
                                                 </div>
                                             </div>
                                         </div>
