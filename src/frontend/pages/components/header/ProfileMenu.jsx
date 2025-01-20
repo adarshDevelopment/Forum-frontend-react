@@ -3,20 +3,14 @@ import { RiAdvertisementLine } from "react-icons/ri";
 import { AiOutlineMessage } from "react-icons/ai";
 import { FaPlus, FaRegBell } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { toggleProfileDropdown } from '../../../../store/features/modalSlice/toggleSlice';
+import NotificationBell from "./NotificationBell";
+import { useDispatch } from "react-redux";
 
-
-import { useDispatch, useSelector } from "react-redux";
-
-import { toggleNotificationDropdown, toggleProfileDropdown } from '../../../../store/features/modalSlice/toggleSlice';
 
 function ProfileMenu({ className }) {
 
-
     const dispatch = useDispatch();
-
-    const user = useSelector(state => state.auth.user);
-    // console.log('user in profile menu: ', user);
-
     return (
         <div className={`${className}`}>
             <div className="flex items-center justify-end gap-2">
@@ -36,13 +30,7 @@ function ProfileMenu({ className }) {
 
 
                 {/* Notification */}
-                <span
-                    id="notificationButton"
-                    onClick={() => { dispatch(toggleNotificationDropdown()) }}
-
-                    className='cursor-pointer hover:bg-slate-400 delay-75 p-2 rounded-full'>
-                    <FaRegBell className='text-2xl' />
-                </span>
+                <NotificationBell />
 
                 {/* End of notification */}
 
@@ -53,12 +41,8 @@ function ProfileMenu({ className }) {
                     className='cursor-pointer hover:bg-slate-400 delay-75 flex items-center h-10 w-10 p-[2px] rounded-full relative select-none'
                 >
                     <img src="https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg" className='object-cover h-full w-full rounded-full' alt="" />
-
                 </button>
-
                 {/* End of profile drpodown */}
-
-
 
             </div>
         </div>

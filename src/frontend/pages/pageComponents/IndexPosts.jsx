@@ -8,11 +8,7 @@ import getGetData from '../../../helperFunctions/getGetData';
 
 function IndexPosts() {
 
-
-
     const user = useSelector(state => state.auth.user.user);
-
-    // const { data, loading, errors } = useFetch({ url: 'posts' });
 
     const [posts, setPosts] = useState([]);
     useEffect(() => {
@@ -26,15 +22,9 @@ function IndexPosts() {
         fetchPosts();
     }, [])
 
-    useEffect(() => {
-        console.log('posts: ', posts);
-    }, [posts])
-
-
     // upvotes post. returns the newly updated post with post with postLike
     const handleUpvotePost = async (postSlug, upvoteStatus) => {
         const data = await getPostData({ url: 'post/upvote', formData: { user: user.id, slug: postSlug, upvoteStatus } })
-        console.log('udpated data: ',data)
         // udpate the post.gross_Votes with the new value 
         if (!data.errors) {
             setPosts(prevState => prevState.map(post => {

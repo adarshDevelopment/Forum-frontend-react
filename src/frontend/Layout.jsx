@@ -36,29 +36,10 @@ function Home() {
     // const token = localStorage.getItem('token');
     const token = useSelector(state => state.auth.token);
 
-
-    // useEffect(() => {
-    //     // const channel = echo.channel('chat');
-    //     // channel.listen('UpdateNotification', (event) => {
-    //     //     console.log('Event data:', event);
-    //     // });
-
-    //     // return () => {
-    //     //     channel.stopListening('chat');
-    //     // }
-    // }, []);
-
-
-
-
-
     useEffect(() => {
         dispatch(fetchUser());
     }, [token])
 
-    // console.log('user in layout: ', user)
-
-    // console.log('user from layout: ', user);
 
     if (user.loading) {
         return <></>
@@ -92,8 +73,6 @@ function Home() {
                     <>
                         <Sidebar />
                     </>
-
-
 
 
                     {/* center main grid */}

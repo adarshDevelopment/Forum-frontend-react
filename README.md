@@ -31,6 +31,10 @@ fetchUser createAssyncThunk is called from Header.jsx to fetch user and also fro
     Favorite thread
     
 
+How real time notification work?
+When a user comments on a post, a notification record is set on the db throug the Laravel app. Laravle echo is used in the NotificationDropDown component to listen to the notification channel and UpdateNotification event. An event is dispatched when a comment is regitered which sends the new notification record along with the total unread notification count. values are set accordingly throug React Redux.
+
+Notifications, initially is fetched through raedux thorugh the useEffect on the Notifidation dropdown
 
 
 

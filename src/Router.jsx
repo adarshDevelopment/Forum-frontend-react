@@ -42,7 +42,7 @@ const router = createBrowserRouter(createRoutesFromElements(
         <Route element={<Layout />} path="/">
             <Route path="/" element={<HomePage />} />
 
-            <Route path="/post/:slug" element={<ShowPost />} />
+            <Route path="/post/:slug/:commentId?" element={<ShowPost />} />
 
             {/* Protected Routes */}
             <Route element={<ProtectedRoutes />} path="">

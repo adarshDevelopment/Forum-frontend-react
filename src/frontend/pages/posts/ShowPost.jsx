@@ -29,9 +29,7 @@ import getGetData from '../../../helperFunctions/getGetData';
 function ShowPost() {
     const navigate = useNavigate();
     // useFetch to fetch post and comments
-    const { slug } = useParams();
-    const fetchCommentTrigger = useSelector(state => state.deleteModalSlice.fetchCommentTrigger)
-    const fetchPostTrigger = useSelector(state => state.deleteModalSlice.fetchPostTrigger)
+    const { slug, commentId } = useParams();
     const dispatch = useDispatch();
 
     // ###########################################################################
@@ -104,14 +102,8 @@ function ShowPost() {
             toast.success('Comment successfuly posted');
             textareaRef.current.blur();
             setComment('');
-
             //   add newly added comment to the Post.comments_ordered arrary 
             setPost(state => ({ ...state, comments_ordered: [commentData.data.comment, ...state.comments_ordered] }))
-
-
-            // setCommentNumber(comments.data?.comments.length);       // what is this for? 
-            // udpate fetchtrigger to update the commetns
-            // dispatch(toggleFetchCommentTrigger());
         }
         if (commentData.errors) {
             toast.error('Error posting comment');
@@ -131,11 +123,6 @@ function ShowPost() {
         }
     }
 
-    useEffect(() => {       // set the post content 
-        // console.log('data inside useEffect: ', data?.post.post.content);
-        // setPostContent(data?.post?.post.content);
-    }, [])
-
     //  update submission
     const [postUpdateLoading, setPostUpdateeLoading] = useState(false);
     const handleUpdateForm = async () => {
@@ -153,15 +140,6 @@ function ShowPost() {
             dispatch(toggleFetchPostTrigger());
         }
     }
-    // console.log('useEffect data: ', data);
-
-    const [commentNumber, setCommentNumber] = useState(0);
-
-    useEffect(() => {
-        // console.log('useEffect data: ', data?.post.comments.length);
-        // setCommentNumber(data?.post.comments.length)
-        // setCommentNumber()
-    }, [])
 
     // end of edit post
     // ###########################################################################
@@ -268,14 +246,13 @@ function ShowPost() {
                             {/* comments */}
 
                             <div className='bg-custom-gray-orange px-4 py-2 rounded-full gap-3 flex items-center flex-row hover:bg-custom-gray-dark cursor-pointer'>
-
                                 <div className='font-semibold flex gap-3 items-center'>
                                     <button>
                                         <BiMessageSquare className='text-2xl' />
                                     </button>
 
                                     {/* <span>{data.post?.comments.length}</span> */}
-                                    <span>{commentNumber}</span>
+                                    <span> {post.comments_ordered.length} </span>
                                 </div>
                             </div>
 
@@ -326,7 +303,6 @@ function ShowPost() {
 
                         {/* Comment text field */}
                         <div className=' w-full flex flex-col'>
-
                             {
                                 showTextField
                                     ? <div className='relative flex flex-col border border-gray-500 rounded-2xl'>
@@ -376,17 +352,12 @@ function ShowPost() {
                         </div>
 
                     </div>
-
-
-
-
                     {/* comment section */}
 
                     {
                         post.comments_ordered
-                            ? <CommentSection comments={post.comments_ordered} setPost={setPost} />
+                            ? <CommentSection comments={post.comments_ordered} setPost={setPost} notificationCommentId={commentId} />
                             : <></>
-
                     }
 
 

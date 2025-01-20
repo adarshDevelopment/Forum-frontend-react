@@ -13,7 +13,7 @@ import DeleteCommentModal from '../components/modals/DeleteCommentModal';
 import { useFormState } from 'react-dom';
 
 
-function CommentSection({ comments, setPost }) {
+function CommentSection({ comments, setPost, notificationCommentId = null }) {
     // comment delete stuff
     const user = useSelector(state => state.auth.user.user);        // for matching post_id and logged in user's id
     const dispatch = useDispatch();
@@ -21,6 +21,28 @@ function CommentSection({ comments, setPost }) {
     // ############################################################################################################################
 
 
+    useEffect(() => {
+        // console.log('comments: ', comments);
+        // const value = comments.some(comment=> comment.id == notificationCommentId);
+        // console.log('map vaue: ', value);
+        if (notificationCommentId && comments && comments.some(comment => comment.id == notificationCommentId)) {
+            // put the notificationCommentId on the first index
+
+            setPost(prevState => {
+                console.log('comemtns array before: ', comments);
+                const updatedComments = [...prevState.comments_ordered];        // setting new array
+                const commentIndex = updatedComments.findIndex(comment => comment.id == notificationCommentId);     // index of the notificationComment on the state array
+                const [commentToMove] = updatedComments.splice(commentIndex, 1);        // removing the comment from the array
+                updatedComments.unshift(commentToMove);         // prepending the object to the array
+
+                console.log('updated local comments: ', updatedComments)
+                return {
+                    ...prevState,
+                    comments_ordered: updatedComments
+                }
+            })
+        }
+    }, [notificationCommentId])
     // for edit comment 
     const textareaRef = useRef();
 
@@ -94,25 +116,18 @@ function CommentSection({ comments, setPost }) {
 
         console.log('upvoted comment: ', upvotedData.data.updatedComment);
         const targetComment = upvotedData.data.updatedComment;
-    
+
         setPost(state => ({
             ...state,
             comments_ordered: state.comments_ordered.map(comment => comment.id == targetComment.id ? targetComment : comment)
 
         }))
 
-        // setLocalComments(prevState =>
-        //     prevState.map((comment) =>
-        //         comment.id == updatedComment.id
-        //             ? updatedComment
-        //             : item
-        //     )   // if ids match replace/return the comment object with the udpated comment 
-        // );
     }
 
     // ############################################################################################################################
 
-    // delete commetn
+    // delete comment
 
 
     const [deleteCommentId, setDeleteCommentId] = useState(-1);
@@ -136,7 +151,8 @@ function CommentSection({ comments, setPost }) {
             <div className='bg-blue-40 flex flex-col px-5 max-w-[755px] ml-28 py-6 flex-grow gap-4'>
                 {
                     comments.map((comment, index) =>
-                        <div key={comment.id} className='bg-purple-40 flex bg-gray-50 rounded-xl p-2'>
+                        <div key={comment.id}
+                            className={`flex rounded-xl px-2 py-3 transition-all duration- ${comment.id == notificationCommentId ? 'bg-yellow-50 ' : 'bg-gray-50'} `}>
 
                             {/* profile picture || First col*/}
                             <div className='flex items-start gap-2 h-fit rounded-full'>

@@ -57,7 +57,7 @@ export default function DeletePostModal() {
 
                         <div className='text-gray-500 mt-3'>Are you sure you want to delete this post?</div>
 
-                    </div>
+                </div>
                     <div className='flex justify-end items-center gap-4 mt-5'>
                         <button
                             onClick={closeModal}
