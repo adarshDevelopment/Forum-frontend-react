@@ -35,8 +35,8 @@ function NotificationBell() {
         }
         const channel = echo.private(`update-notification.${user.user?.id}`)
             .listen('UpdateNotification', (event) => {
-                console.log('event: ', event);
-                dispatch(updateNotification(event));
+                // console.log('event: ', event);
+                dispatch(updateNotification(event));    // a single notification row
             })
 
         return () => {

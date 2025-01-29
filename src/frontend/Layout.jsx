@@ -17,8 +17,6 @@ import SignUp from './pages/components/SignUp';
 import DeleteCommentModal from './pages/components/modals/DeleteCommentModal';
 
 
-import echo from '../echo';
-
 import { Outlet } from 'react-router-dom';
 import DeletePostModal from './pages/components/modals/DeletePostModal';
 

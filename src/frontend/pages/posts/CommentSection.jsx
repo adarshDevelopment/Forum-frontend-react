@@ -29,13 +29,11 @@ function CommentSection({ comments, setPost, notificationCommentId = null }) {
             // put the notificationCommentId on the first index
 
             setPost(prevState => {
-                console.log('comemtns array before: ', comments);
                 const updatedComments = [...prevState.comments_ordered];        // setting new array
                 const commentIndex = updatedComments.findIndex(comment => comment.id == notificationCommentId);     // index of the notificationComment on the state array
                 const [commentToMove] = updatedComments.splice(commentIndex, 1);        // removing the comment from the array
                 updatedComments.unshift(commentToMove);         // prepending the object to the array
 
-                console.log('updated local comments: ', updatedComments)
                 return {
                     ...prevState,
                     comments_ordered: updatedComments

@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Footer from '../components/Footer'
-import useFetch from '../../hooks/useFetch';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 
 import { CgProfile } from "react-icons/cg";
 import { BiMessageSquare, BiShareAlt, BiMessageRounded } from "react-icons/bi";
@@ -31,6 +30,7 @@ function ShowPost() {
     // useFetch to fetch post and comments
     const { slug, commentId } = useParams();
     const dispatch = useDispatch();
+    const location = useLocation();
 
     // ###########################################################################
     // post and comments fetch
@@ -59,8 +59,9 @@ function ShowPost() {
     }
 
     useEffect(() => {
+        console.log('fetching posts with comments');
         fetchPostWithComments();
-    }, [])
+    }, [location])
 
     // end of fetch post along with comments 
     // ###########################################################################
