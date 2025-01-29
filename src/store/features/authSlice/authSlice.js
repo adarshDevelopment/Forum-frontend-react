@@ -60,6 +60,12 @@ const authSlice = createSlice({
         },
         clearRegister: state => {
             state.registration = initialState.registration;
+        },
+        setStateToken: state => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                state.token = token;
+            }
         }
 
     },
@@ -76,6 +82,7 @@ const authSlice = createSlice({
                     const token = action.payload.token;
                     setToken(token);
                     state.token = token;
+
                     state.login.isError = false;
                     state.login.message = action.payload.message;
                     state.login.errors = action.payload.message;
@@ -228,5 +235,5 @@ export const login = createAsyncThunk(
 
 
 
-export const { logout, clearLogin, clearRegister } = authSlice.actions;
+export const { logout, clearLogin, clearRegister, setStateToken } = authSlice.actions;
 export default authSlice.reducer;

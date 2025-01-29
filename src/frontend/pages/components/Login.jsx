@@ -43,7 +43,6 @@ function Login({ className }) {
             // console.log('Login failed. ', error);
         }
 
-
     }
 
     const errors = useSelector(state => state.auth.login.errors);

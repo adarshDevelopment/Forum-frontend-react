@@ -357,7 +357,7 @@ function ShowPost() {
 
                     {
                         post.comments_ordered
-                            ? <CommentSection comments={post.comments_ordered} setPost={setPost} notificationCommentId={commentId} />
+                            ? <CommentSection comments={post.comments_ordered} setPost={setPost} notificationCommentId={commentId} loggedInUser={loggedInUser}  />
                             : <></>
                     }
 

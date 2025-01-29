@@ -118,6 +118,10 @@ function SignUp({ className }) {
 
     const user = useSelector(state => state.auth.user);
 
+    const signUpWithGoogle = () => {
+        window.location.href = 'http://localhost:8000/auth/google/redirect'
+    }
+
     if (user?.user) {
         return <></>
     }
@@ -152,7 +156,9 @@ function SignUp({ className }) {
                             By continuing, you agree to our User Agreement and acknowledge that you understnad the privace policy.
                         </div>
 
-                        <div className=' border p-2 rounded-2xl border-gray-400 relative flex justify-center items-center'>
+                        <div
+                            onClick={signUpWithGoogle}
+                            className=' border p-2 rounded-2xl border-gray-400 relative flex justify-center items-center cursor-pointer hover:text-red-500 duration-100 hover:border-red-500'>
                             <div className='absolute left-2'><FaGoogle /></div>
                             <span> Continue with Google</span>
                         </div>

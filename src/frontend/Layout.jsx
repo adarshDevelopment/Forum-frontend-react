@@ -4,7 +4,7 @@ import { Toaster, toast } from 'sonner';
 import { useDispatch, useSelector } from 'react-redux';
 
 // import { fetchUser } from 'src\store\features\authSlice\authSlice.js'
-import { fetchUser } from '../store/features/authSlice/authSlice';
+import { fetchUser, setStateToken } from '../store/features/authSlice/authSlice';
 
 
 // pages import
@@ -37,6 +37,19 @@ function Home() {
     useEffect(() => {
         dispatch(fetchUser());
     }, [token])
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const paramToken = params.get('token');
+        if (!paramToken) {
+            // if no paramToken, it means no redirection from socialite, which means simply return
+            return
+        }
+        // if params token, set the token and also set the state and redirect the user to dashboard
+        localStorage.setItem('token', paramToken);
+        dispatch(setStateToken(paramToken));
+        window.location.href = 'http://localhost:5173/'
+    }, [])
 
 
     if (user.loading) {

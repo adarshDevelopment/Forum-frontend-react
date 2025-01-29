@@ -13,7 +13,7 @@ import DeleteCommentModal from '../components/modals/DeleteCommentModal';
 import { useFormState } from 'react-dom';
 
 
-function CommentSection({ comments, setPost, notificationCommentId = null }) {
+function CommentSection({ comments, setPost, notificationCommentId = null, loggedInUser = null }) {
     // comment delete stuff
     const user = useSelector(state => state.auth.user.user);        // for matching post_id and logged in user's id
     const dispatch = useDispatch();
@@ -22,10 +22,9 @@ function CommentSection({ comments, setPost, notificationCommentId = null }) {
 
 
     useEffect(() => {
-        // console.log('comments: ', comments);
-        // const value = comments.some(comment=> comment.id == notificationCommentId);
-        // console.log('map vaue: ', value);
-        if (notificationCommentId && comments && comments.some(comment => comment.id == notificationCommentId)) {
+        console.log('logged in user: ', loggedInUser);
+        if (notificationCommentId && comments && loggedInUser && comments.some(comment => comment.id == notificationCommentId)) {
+
             // put the notificationCommentId on the first index
 
             setPost(prevState => {
@@ -40,7 +39,7 @@ function CommentSection({ comments, setPost, notificationCommentId = null }) {
                 }
             })
         }
-    }, [notificationCommentId])
+    }, [notificationCommentId, loggedInUser])
     // for edit comment 
     const textareaRef = useRef();
 
@@ -150,7 +149,7 @@ function CommentSection({ comments, setPost, notificationCommentId = null }) {
                 {
                     comments.map((comment, index) =>
                         <div key={comment.id}
-                            className={`flex rounded-xl px-2 py-3 transition-all duration- ${comment.id == notificationCommentId ? 'bg-yellow-50 ' : 'bg-gray-50'} `}>
+                            className={`flex rounded-xl px-2 py-3 transition-all duration- ${comment.id == notificationCommentId && loggedInUser ? 'bg-yellow-50 ' : 'bg-gray-50'} `}>
 
                             {/* profile picture || First col*/}
                             <div className='flex items-start gap-2 h-fit rounded-full'>

@@ -6,7 +6,6 @@ import IndexPosts from "./frontend/pages/pageComponents/IndexPosts";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { fetchUser } from "./store/features/authSlice/authSlice";
 
 
 import CreatePost from "./frontend/pages/posts/CreatePost";
