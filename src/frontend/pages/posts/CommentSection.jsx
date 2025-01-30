@@ -13,7 +13,7 @@ import DeleteCommentModal from '../components/modals/DeleteCommentModal';
 import { useFormState } from 'react-dom';
 
 
-function CommentSection({ comments, setPost, notificationCommentId = null, loggedInUser = null }) {
+function CommentSection({ comments, setPost, notificationCommentId = null, loggedInUser = null, post }) {
     // comment delete stuff
     const user = useSelector(state => state.auth.user.user);        // for matching post_id and logged in user's id
     const dispatch = useDispatch();
@@ -22,9 +22,10 @@ function CommentSection({ comments, setPost, notificationCommentId = null, logge
 
 
     useEffect(() => {
-        console.log('logged in user: ', loggedInUser);
-        if (notificationCommentId && comments && loggedInUser && comments.some(comment => comment.id == notificationCommentId)) {
-
+        console.log('inside useEffect');
+        // console.log('logged in user: ', loggedInUser);
+        // console.log('notificationCommentId: ', notificationCommentId);
+        if (notificationCommentId && comments && comments.some(comment => comment.id == notificationCommentId)) {
             // put the notificationCommentId on the first index
 
             setPost(prevState => {
@@ -32,7 +33,7 @@ function CommentSection({ comments, setPost, notificationCommentId = null, logge
                 const commentIndex = updatedComments.findIndex(comment => comment.id == notificationCommentId);     // index of the notificationComment on the state array
                 const [commentToMove] = updatedComments.splice(commentIndex, 1);        // removing the comment from the array
                 updatedComments.unshift(commentToMove);         // prepending the object to the array
-
+                console.log('updated comments: ', updatedComments);
                 return {
                     ...prevState,
                     comments_ordered: updatedComments
@@ -43,6 +44,9 @@ function CommentSection({ comments, setPost, notificationCommentId = null, logge
     // for edit comment 
     const textareaRef = useRef();
 
+    console.log('updated post outside of if: ', post.comments_ordered);
+
+    // ############################################################################################################################
     const handleInput = (e) => {
         if (textareaRef.current) {
             // increase the textarea height as the user keeps typing so scrollbar does not appear 
@@ -134,7 +138,6 @@ function CommentSection({ comments, setPost, notificationCommentId = null, logge
         setDeleteCommentId(commentId);
         setShowDeleteCommentModal(true);
     }
-
 
     return (
         <>

@@ -28,7 +28,7 @@ import getGetData from '../../../helperFunctions/getGetData';
 function ShowPost() {
     const navigate = useNavigate();
     // useFetch to fetch post and comments
-    const { slug, commentId } = useParams();
+    const { slug, commentId } = useParams();        // commentId to identiy the comment to be highlighted as per the notification
     const dispatch = useDispatch();
     const location = useLocation();
 
@@ -58,10 +58,12 @@ function ShowPost() {
         setPostLoading(false);
     }
 
+    const fetchPosts = useMemo
+
     useEffect(() => {
         console.log('fetching posts with comments');
         fetchPostWithComments();
-    }, [location])
+    }, [commentId, slug])
 
     // end of fetch post along with comments 
     // ###########################################################################
@@ -357,7 +359,7 @@ function ShowPost() {
 
                     {
                         post.comments_ordered
-                            ? <CommentSection comments={post.comments_ordered} setPost={setPost} notificationCommentId={commentId} loggedInUser={loggedInUser}  />
+                            ? <CommentSection comments={post.comments_ordered} setPost={setPost} notificationCommentId={commentId} loggedInUser={loggedInUser} post={post} />
                             : <></>
                     }
 
