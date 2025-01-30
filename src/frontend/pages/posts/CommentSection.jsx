@@ -44,7 +44,7 @@ function CommentSection({ comments, setPost, notificationCommentId = null, logge
     // for edit comment 
     const textareaRef = useRef();
 
-    console.log('updated post outside of if: ', post.comments_ordered);
+    // console.log('updated post outside of if: ', post.comments_ordered);
 
     // ############################################################################################################################
     const handleInput = (e) => {

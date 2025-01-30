@@ -54,11 +54,29 @@ function ShowPost() {
                 toast.error(data.errors);
             }
         }
-        setPost(data.data.post.post);
+
+        var unarrangedPost = data.data.post.post;
+
+        // putting the notification comment on top of the comment list
+
+        if (commentId && unarrangedPost && unarrangedPost.comments_ordered.some(comment => comment.id == commentId)) {
+
+            // find the index comment with the commentID
+            const commentIndex = unarrangedPost.comments_ordered.findIndex(comment => comment.id == commentId);
+
+            // remove the comment from the array
+            const [commentToMove] = unarrangedPost.comments_ordered.splice(commentIndex, 1);
+
+            // add the comment to the top of the array
+            unarrangedPost.comments_ordered.unshift(commentToMove);
+            console.log('arragnement test: ', unarrangedPost.comments_ordered);
+            setPost(unarrangedPost);
+        } else {
+            setPost(data.data.post.post);
+        }
+
         setPostLoading(false);
     }
-
-    const fetchPosts = useMemo
 
     useEffect(() => {
         console.log('fetching posts with comments');
