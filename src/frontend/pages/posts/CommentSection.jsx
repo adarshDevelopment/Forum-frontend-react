@@ -11,6 +11,8 @@ import { toggleFetchCommentTrigger } from '../../../store/features/deleteModalSl
 import getPostData from '../../../helperFunctions/getPostData';
 import DeleteCommentModal from '../components/modals/DeleteCommentModal';
 import { useFormState } from 'react-dom';
+import activityDate from '../../../utils/activityDate';
+import { Link } from 'react-router-dom';
 
 
 function CommentSection({ comments, setPost, notificationCommentId = null, loggedInUser = null, post }) {
@@ -220,8 +222,8 @@ function CommentSection({ comments, setPost, notificationCommentId = null, logge
                                         <div className='relative'>
                                             {/* username and actual comment  */}
                                             <div className='flex items-center'>
-                                                <span className='text-sm text-gray-500'>u/{comment.user.name}</span>
-                                                <span className='text-sm text-gray-500'> - 11 hours ago</span>
+                                                <Link to={`../user/${comment.user.name}`} className='text-sm text-gray-500'>u/{comment.user.name}</Link>
+                                                <span className='text-sm text-gray-500'> - {activityDate({timeStamp:comment.created_at})}</span>
                                             </div>
                                             <span className=' break-all'> {comment.comment}</span>
 

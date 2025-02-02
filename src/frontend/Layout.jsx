@@ -48,10 +48,11 @@ function Home() {
         // if params token, set the token and also set the state and redirect the user to dashboard
         localStorage.setItem('token', paramToken);
         dispatch(setStateToken(paramToken));
-        window.location.href = `http://localhost:5173/user/${user?.name}`
+        // console.log('user: ', user);
+        // window.location.href = `http://localhost:5173/user/${user.name}`
     }, [])
 
-
+// console.log('user from layout: ', user);
     if (user.loading) {
         return <></>
     } else {

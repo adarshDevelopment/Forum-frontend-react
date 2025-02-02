@@ -43,11 +43,12 @@ const router = createBrowserRouter(createRoutesFromElements(
             <Route path="/" element={<HomePage />} />
 
             <Route path="/post/:slug/:commentId?" element={<ShowPost />} />
-
+            
+            <Route path="user/:userId" element={<ProfilePage />} />
             {/* Protected Routes */}
             <Route element={<ProtectedRoutes />} path="">
                 <Route path="create_post" element={<CreatePost />} />
-                <Route path="user/:userId" element={<ProfilePage />} />
+
             </Route>
 
         </Route>

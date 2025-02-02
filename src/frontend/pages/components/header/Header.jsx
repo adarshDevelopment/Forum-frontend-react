@@ -52,7 +52,7 @@ function Header() {
                 <LoginButtons /> */}
                 {
                     user.user
-                        ? <ProfileMenu className={'flex-1 bg-blue-40 h-full flex items-center justify-end relative flex-shrin-0'} />
+                        ? <ProfileMenu className={'flex-1 bg-blue-40 h-full flex items-center justify-end relative flex-shrin-0'} user={user.user} />
                         : <LoginButtons />
                 }
 

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import getPostData from '../../../helperFunctions/getPostData';
 import getGetData from '../../../helperFunctions/getGetData';
+import activityDate from '../../../utils/activityDate';
 
 function IndexPosts({className}) {
 
@@ -69,7 +70,7 @@ function IndexPosts({className}) {
                                                     <div className='flex gap-1 items-center'>
                                                         {/* <span className='text-gray-600 text-sm'>r/SubName</span> */}
                                                         <span className='text-gray-600 text-sm'>{post.user.name}</span>
-                                                        <span className='text-gray-400 text-xs'>. 1 hr ago</span>
+                                                        <span className='text-gray-400 text-xs'>. {activityDate({timeStamp:post.created_at})}</span>
                                                     </div>
 
                                                     <span className='text-gray-400 text-xs'>Promoted</span>

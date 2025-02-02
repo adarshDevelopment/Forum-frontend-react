@@ -8,7 +8,9 @@ import NotificationBell from "./NotificationBell";
 import { useDispatch } from "react-redux";
 
 
-function ProfileMenu({ className }) {
+function ProfileMenu({ className, user }) {
+
+    console.log('user avatar: ', user);
 
     const dispatch = useDispatch();
     return (
@@ -38,9 +40,14 @@ function ProfileMenu({ className }) {
                 <button
                     id="profileButton"
                     onClick={() => dispatch(toggleProfileDropdown())}
-                    className='cursor-pointer hover:bg-slate-400 delay-75 flex items-center h-10 w-10 p-[2px] rounded-full relative select-none'
+                    className='cursor-pointer hover:bg-slate-400 delay-75 flex items-center h-10 w-10 p-[2px] rounded-md relative select-none'
                 >
-                    <img src="https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg" className='object-cover h-full w-full rounded-full' alt="" />
+                    {
+                        user.avatar
+                            ? <img src={user.avatar} className='object-cover h-full w-full rounded-md' alt="" />
+                            : <img src="./images/avatarPlaceholder.webp" className='object-cover h-full w-full rounded-md' alt="" />
+                    }
+
                 </button>
                 {/* End of profile drpodown */}
 

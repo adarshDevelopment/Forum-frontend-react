@@ -101,8 +101,8 @@ function ProfilePage() {
 
             {/* right side */}
 
-            <div className="col-span-2 bg-pink-400 sticky top-16-h-[calc(100vh-64px)]">
-                right side
+            <div className="col-span-2 bg-pink-40 sticky top-16-h-[calc(100vh-64px)]">
+                {/* right side */}
             </div>
 
         </>
