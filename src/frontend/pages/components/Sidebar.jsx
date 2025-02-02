@@ -18,7 +18,7 @@ function Sidebar({ className }) {
 
 
     return (
-        <aside className={`bg-blue-40 border-r col-span-2 sticky top-16 h-[calc(100vh-64px)] overflow-y-auto ${className}`}>
+        <aside className={` ${className}`}>
             {/* scrollable sidebar */}
             <div className=' h-full flex flex-col px-5 bg-green-40'>
                 {/* home, popular, explore, all */}

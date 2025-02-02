@@ -157,9 +157,18 @@ function CommentSection({ comments, setPost, notificationCommentId = null, logge
                             {/* profile picture || First col*/}
                             <div className='flex items-start gap-2 h-fit rounded-full'>
                                 <div className='h-[50px] w-[50px]'>
-                                    <img
+                                    {
+                                        comment.user.avatar
+                                            ? <img
+                                                className="h-[44px] w-[44px] object-cover rounded-md "
+                                                src={comment.user.avatar} alt="" />
+                                            : <img
+                                                className="h-[44px] w-[44px] object-cover rounded-md"
+                                                src="/images/avatarPlaceholder.webp" alt="" />
+                                    }
+                                    {/* <img
                                         className='w-full h-full object-cover rounded-full'
-                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLSzT6HpzeJ8HQ3Y_TT5FoFCrfBRwGvtqLoA&s" alt="" />
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLSzT6HpzeJ8HQ3Y_TT5FoFCrfBRwGvtqLoA&s" alt="" /> */}
                                 </div>
                             </div>
 

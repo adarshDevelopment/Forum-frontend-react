@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import getPostData from '../../../helperFunctions/getPostData';
 import getGetData from '../../../helperFunctions/getGetData';
 
-function IndexPosts() {
+function IndexPosts({className}) {
 
     const user = useSelector(state => state.auth.user.user);
 
@@ -39,7 +39,7 @@ function IndexPosts() {
     if (posts && posts.length > 0) {
         return (
             <>
-                <main className='bg-green-40 col-span-8 flex flex-col relative'>
+                <main className={`${className}`}>
 
                     <center className='flex-grow flex-shrink-0 p-5 bg-red-40'>
 

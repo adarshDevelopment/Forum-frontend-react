@@ -17,7 +17,7 @@ function HomePage() {
             <main className='bg-green-40 col-span-8 flex flex-col relative'>
 
                 {/* <IndexPosts /> */}
-                <IndexPosts />
+                <IndexPosts className={'bg-green-40 col-span-8 flex flex-col relative'} />
 
                 {/* footer */}
                 <Footer className={'bg-white'} />
@@ -26,8 +26,8 @@ function HomePage() {
 
             {/* right side */}
 
-            <div className='col-span-2 bg-pink-400 sticky top-16 h-[calc(100vh-64px)] '>
-                second div
+            <div className='col-span-2 bg-pink-40 sticky top-16 h-[calc(100vh-64px)] '>
+                {/* second div */}
             </div>
 
         </>

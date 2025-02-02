@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toggleProfileDropdown } from '../../../../store/features/modalSlice/toggleSlice';
 import DarkMode from './DarkMode';
 import { fetchUser, logout } from '../../../../store/features/authSlice/authSlice';
+import { Link } from 'react-router-dom';
 
 function ProfileDropDown() {
 
@@ -57,10 +58,12 @@ function ProfileDropDown() {
             >
 
 
-                <div className='px-7 py-4 hover:bg-indigo-500 hover:text-white cursor-pointer border-b border-gray-400 flex flex-col '>
+                <Link
+                    to={`/user/${user?.id}`}
+                    className='px-7 py-4 hover:bg-indigo-500 hover:text-white cursor-pointer border-b border-gray-400 flex flex-col '>
                     <span>View Profile</span>
                     <span className='text-sm text-gray-600 '>{user?.name}</span>
-                </div>
+                </Link>
 
                 <span className='px-7 py-4 hover:bg-indigo-500 hover:text-white cursor-pointer'>Edit Avatar</span>
 

@@ -1,16 +1,17 @@
 import { createBrowserRouter, createRoutesFromElements, Outlet, Route, useNavigate, Navigate } from "react-router-dom"
 import Layout from './frontend/Layout';
-import NotFound from "./frontend/pages/components/NotFound";
+import NotFound from "./frontend/pages/error_pages/NotFound";
 import HomePage from "./frontend/pages/HomePage";
 import IndexPosts from "./frontend/pages/pageComponents/IndexPosts";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-
+import ProfilePage from "./frontend/pages/profile_page/ProfilePage";
 import CreatePost from "./frontend/pages/posts/CreatePost";
 // import ShowPost from "./frontend/pages/posts/ShowPost";
 import ShowPost from "./frontend/pages/posts/ShowPost";
+import UserNotFound from "./frontend/pages/error_pages/UserNotFound";
 
 
 /* every time the state changes (state.auth.user), which is changed after log out and log in, the component 
@@ -46,11 +47,13 @@ const router = createBrowserRouter(createRoutesFromElements(
             {/* Protected Routes */}
             <Route element={<ProtectedRoutes />} path="">
                 <Route path="create_post" element={<CreatePost />} />
+                <Route path="user/:userId" element={<ProfilePage />} />
             </Route>
 
         </Route>
 
         <Route element={<NotFound />} path="*" />
+
 
     </>
 ));

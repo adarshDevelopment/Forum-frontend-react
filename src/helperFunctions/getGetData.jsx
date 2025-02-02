@@ -1,7 +1,6 @@
 import axios from "axios";
 
 export default async function getGetData({ url }) {
-
     const token = localStorage.getItem('token');
     try {
         const data = await axios.get(`http://127.0.0.1:8000/api/${url}`, {
@@ -13,6 +12,7 @@ export default async function getGetData({ url }) {
 
         return { errors: null, data: data.data }
     } catch (e) {
+        // console.log('e inside getData: ', e);
         if (e.response) {
             return {errors:e.response }
             return { errors: 'Internal Server error', data: null };

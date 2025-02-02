@@ -48,7 +48,7 @@ function Home() {
         // if params token, set the token and also set the state and redirect the user to dashboard
         localStorage.setItem('token', paramToken);
         dispatch(setStateToken(paramToken));
-        window.location.href = 'http://localhost:5173/'
+        window.location.href = `http://localhost:5173/user/${user?.name}`
     }, [])
 
 
@@ -82,7 +82,7 @@ function Home() {
 
                     {/* Left grid */}
                     <>
-                        <Sidebar />
+                        <Sidebar className={'bg-blue-40 border-r col-span-2 sticky top-16 h-[calc(100vh-64px)] overflow-y-auto'} />
                     </>
 
 

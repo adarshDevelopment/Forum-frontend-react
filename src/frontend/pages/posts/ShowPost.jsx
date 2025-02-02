@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import PostUpvote from '../components/upvote/PostUpvote';
 import getGetData from '../../../helperFunctions/getGetData';
 
+import activityDate from '../../../utils/activityDate';
 
 function ShowPost() {
     const navigate = useNavigate();
@@ -106,7 +107,7 @@ function ShowPost() {
             textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
         }
     }
-    // end of textarea input toggle 
+    // end of textarea input toggle
     // ###########################################################################
 
     // post submission:
@@ -164,6 +165,45 @@ function ShowPost() {
 
     // end of edit post
     // ###########################################################################
+    /*
+        const postTimeDiffInHour = (new Date() - new Date(post.created_at)) / 3600000;
+        console.log('time diff: ', postTimeDiffInHour);
+        var displaytime;
+    
+        if (postTimeDiffInHour < 1) {   // under 1 hour
+            displaytime = Math.floor(postTimeDiffInHour * 60) < 1
+                ? 'Just now'
+                : Math.floor(postTimeDiffInHour * 60) === 1
+                    ? '1 minute ago'
+                    : `${Math.floor(postTimeDiffInHour * 60)} minutes ago`;
+        }
+        else if (postTimeDiffInHour > 1 && postTimeDiffInHour < 24) { // under 24 hours.. 1 hour, 2 hours, ...23 hours
+            displaytime = (Math.floor(postTimeDiffInHour) / 60) < 2
+                ? '1 hour ago'
+                : `${Math.floor(postTimeDiffInHour / 60)} hours ago`;
+        }
+    
+        else if (postTimeDiffInHour > 24 && postTimeDiffInHour < 168) { // days.. 1 day, 2 days, 6 days
+            displaytime = Math.floor(postTimeDiffInHour / 24) < 2
+                ? '1 day ago'
+                : `${Math.floor(postTimeDiffInHour / 24)} days ago`;
+        }
+        else if (postTimeDiffInHour > 168 && postTimeDiffInHour < 720) { // 1 week, 2 weeks, 4 weeks
+            displaytime = Math.floor(postTimeDiffInHour / 168) < 2
+                ? '1  week ago'
+                : `${Math.floor(postTimeDiffInHour / 168)} weeks ago`;
+        }
+        else if (postTimeDiffInHour > 720 && postTimeDiffInHour < 8760) {   // 1 month, 2 months, 11 months
+            displaytime = Math.floor(postTimeDiffInHour / 720) < 2
+                ? '1 month ago'
+                : `${Math.floor(postTimeDiffInHour / 720)} months ago`;
+        }
+        else if (postTimeDiffInHour > 8760) {       // 1 year, 2 years.....
+            displaytime = Math.floor(postTimeDiffInHour / 8760) < 2
+                ? '1 year ago'
+                : `${Math.floor(postTimeDiffInHour / 8760)} years ago`;
+        }
+                */
 
     if (!postLoading && post) {
 
@@ -182,10 +222,28 @@ function ShowPost() {
 
                         {/* profile info */}
                         <div className="bg-green-40 flex gap-2 items-start">
-                            <CgProfile className='text-5xl' />
+                            <Link to={`../user/${user.id}`}>
+                                {
+                                    user.avatar
+                                        ?
+                                        <img
+                                            className="h-[44px] w-[44px] object-cover rounded-md "
+                                            src={user.avatar} alt="" />
+                                        : <img
+                                            className="h-[44px] w-[44px] object-cover rounded-md"
+                                            src="/images/avatarPlaceholder.webp" alt="" />
+                                }
+
+                            </Link>
+
+
                             <div className='flex flex-col bg-blue-40'>
-                                <span className='font-semibold'>{user.name}</span>
-                                <span className="text-sm text-gray-600">5 hrs ago</span>
+                                <Link to={`../user/${user.id}`} className='font-semibold hover:underline'>{user.name}</Link>
+                                <span className="text-sm text-gray-600">{activityDate({ timeStamp: post.created_at })}</span>
+                                {
+
+                                }
+                                {/* {post.created_at } */}
                             </div>
 
                         </div>
@@ -387,8 +445,8 @@ function ShowPost() {
 
                 {/* right side */}
 
-                <div className='col-span-2 bg-pink-400 sticky top-16 h-[calc(100vh-64px)] '>
-                    second div
+                <div className='col-span-2 bg-pink-40 sticky top-16 h-[calc(100vh-64px)] '>
+                    {/* second div */}
                 </div>
 
             </>
